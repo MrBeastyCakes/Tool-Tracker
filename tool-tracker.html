@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tool Track</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f1117; --bg2: #181a24; --bg3: #1e2030;
+  --fg: #e4e6f0; --fg2: #9399b2;
+  --accent: #f5a623; --accent2: #e8913a;
+  --red: #e55b5b; --green: #5ec269; --blue: #5b9ee5; --orange: #e89b3a;
+  --border: #2a2d3e; --radius: 12px;
+  --shadow-soft: 0 10px 28px rgba(0,0,0,0.18);
+  --shadow-hover: 0 16px 36px rgba(0,0,0,0.22);
+  --shadow-focus: 0 0 0 4px rgba(245,166,35,0.12);
+  --ease-premium: cubic-bezier(.22,.8,.24,1);
+  --ease-snap: cubic-bezier(.2,.9,.2,1);
+}
+html.light {
+  --bg: #f4f5f7; --bg2: #ffffff; --bg3: #ecedf1;
+  --fg: #1a1c24; --fg2: #6b7082;
+  --accent: #d48a0a; --accent2: #c07a08;
+  --red: #d04040; --green: #2f9e3f; --blue: #3578c4; --orange: #c07a08;
+  --border: #d5d7e0;
+  --shadow-soft: 0 14px 30px rgba(19,24,37,0.08);
+  --shadow-hover: 0 18px 38px rgba(19,24,37,0.12);
+  --shadow-focus: 0 0 0 4px rgba(212,138,10,0.13);
+}
+html, body { transition: background-color 220ms var(--ease-premium), color 220ms var(--ease-premium); }
+html.light .btn-accent { color: #fff; }
+html.light .chk { background: var(--bg2); }
+html.light .cat-row td { background: #e8e9ee; }
+html.light .cat-count { background: #d5d7e0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(245,166,35,0.06), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(91,158,229,0.05), transparent 28%),
+    var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button, input, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+
+.header {
+  background: color-mix(in srgb, var(--bg2) 92%, transparent);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-wrap: wrap;
+  gap: 8px;
+  backdrop-filter: blur(12px);
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; color: var(--accent); letter-spacing: -0.5px; text-shadow: 0 0 18px rgba(245,166,35,0.08); }
+.logo span { color: var(--fg2); font-weight: 500; font-size: 14px; margin-left: 8px; letter-spacing: 0; }
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg3) 92%, white 8%), var(--bg3));
+  color: var(--fg);
+  cursor: pointer;
+  transition: transform 140ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background-color 160ms var(--ease-premium), border-color 160ms var(--ease-premium), opacity 160ms var(--ease-premium), color 160ms var(--ease-premium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.btn:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--fg2) 72%, var(--border)); box-shadow: 0 10px 20px rgba(0,0,0,0.12); }
+.btn:active { transform: translateY(0) scale(0.985); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-accent { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 88%, white 12%), var(--accent)); color: #111; border-color: color-mix(in srgb, var(--accent) 78%, black 22%); }
+.btn-accent:hover { background: linear-gradient(180deg, color-mix(in srgb, var(--accent2) 88%, white 12%), var(--accent2)); border-color: var(--accent2); }
+.btn-danger { color: var(--red); }
+.btn-danger:hover { background: rgba(229,91,91,0.12); border-color: var(--red); box-shadow: 0 10px 24px rgba(229,91,91,0.12); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-icon { padding: 7px 9px; font-size: 15px; }
+.btn-green { background: linear-gradient(180deg, color-mix(in srgb, var(--green) 82%, white 18%), var(--green)); color: #fff; border-color: color-mix(in srgb, var(--green) 80%, black 20%); }
+.btn-green:hover { opacity: 0.96; }
+#theme-btn { transition: transform 220ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background-color 160ms var(--ease-premium), border-color 160ms var(--ease-premium); }
+#theme-btn.theme-spin { transform: rotate(180deg) scale(1.06); }
+
+.layout { display: flex; min-height: calc(100vh - 60px); }
+.sidebar {
+  width: 230px;
+  background: color-mix(in srgb, var(--bg2) 94%, transparent);
+  border-right: 1px solid var(--border);
+  padding: 18px 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(14px);
+}
+.sidebar-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--fg2); padding: 0 18px; margin-bottom: 10px; }
+.crew-item {
+  position: relative;
+  margin: 2px 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 140ms var(--ease-premium), background-color 140ms var(--ease-premium), color 140ms var(--ease-premium), box-shadow 140ms var(--ease-premium);
+  border-left: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.crew-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0;
+  transform: scaleY(0.35);
+  transition: transform 180ms var(--ease-premium), opacity 180ms var(--ease-premium);
+}
+.crew-item:hover { background: color-mix(in srgb, var(--bg3) 90%, transparent); transform: translateX(2px); }
+.crew-item.active {
+  background: linear-gradient(90deg, rgba(245,166,35,0.12), color-mix(in srgb, var(--bg3) 86%, transparent));
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(245,166,35,0.14);
+}
+.crew-item.active::before { opacity: 1; transform: scaleY(1); }
+.crew-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg);
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: var(--fg2);
+  transition: transform 140ms var(--ease-premium), background-color 140ms var(--ease-premium), color 140ms var(--ease-premium), box-shadow 140ms var(--ease-premium);
+}
+.crew-item.active .crew-count { background: rgba(245,166,35,0.14); color: var(--accent); box-shadow: 0 0 0 1px rgba(245,166,35,0.15); }
+.sidebar-bottom { margin-top: auto; padding: 12px 14px; }
+
+.main { flex: 1; padding: 24px 28px; overflow-y: auto; animation: viewFade 220ms var(--ease-premium); }
+@keyframes viewFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.toolbar h2 { font-size: 20px; font-weight: 800; margin-right: auto; letter-spacing: -0.02em; }
+.search-box {
+  font-family: 'DM Sans', sans-serif;
+  background: color-mix(in srgb, var(--bg2) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  color: var(--fg);
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+  transition: border-color 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background-color 160ms var(--ease-premium), transform 160ms var(--ease-premium);
+}
+.search-box:hover { border-color: color-mix(in srgb, var(--fg2) 70%, var(--border)); }
+.search-box:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); background: var(--bg2); transform: translateY(-1px); }
+.search-box::placeholder { color: var(--fg2); }
+
+.summary-row, .overview-hero { display: flex; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+.summary-card {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bg2) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px 18px;
+  flex: 1;
+  min-width: 100px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 160ms var(--ease-premium), border-color 160ms var(--ease-premium), box-shadow 180ms var(--ease-premium), background-color 180ms var(--ease-premium);
+}
+.summary-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 36%);
+  pointer-events: none;
+}
+.summary-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: color-mix(in srgb, var(--accent) 25%, var(--border)); }
+.summary-card .label { font-size: 11px; color: var(--fg2); text-transform: uppercase; letter-spacing: 0.9px; font-weight: 700; }
+.summary-card .value { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; margin-top: 6px; letter-spacing: -0.03em; }
+.val-total{color:var(--fg)} .val-ok{color:var(--green)} .val-dmg{color:var(--red)} .val-rep{color:var(--blue)} .val-miss{color:var(--orange)}
+
+.table-wrap {
+  background: color-mix(in srgb, var(--bg2) 95%, transparent);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  overflow-x: auto;
+  box-shadow: var(--shadow-soft);
+}
+table { width: 100%; border-collapse: collapse; min-width: 900px; }
+thead th {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--fg2);
+  text-align: left;
+  padding: 13px 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg3) 96%, white 4%), var(--bg3));
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background-color 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), transform 160ms var(--ease-premium); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(245,166,35,0.035); }
+tbody tr:hover td:first-child { box-shadow: inset 2px 0 0 rgba(245,166,35,0.45); }
+tbody tr:focus-within { background: rgba(245,166,35,0.05); }
+tbody td { padding: 9px 8px; font-size: 13px; vertical-align: middle; transition: background-color 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium); }
+tr.row-flash td { animation: rowFlash 480ms var(--ease-snap); }
+@keyframes rowFlash { 0% { background: rgba(245,166,35,0.15); } 100% { background: transparent; } }
+td.tool-id { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: var(--accent); white-space: nowrap; }
+td.editable-cell { position: relative; }
+td.editable-cell::after {
+  content: 'Saved';
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  color: var(--green);
+  background: rgba(94,194,105,0.12);
+  border: 1px solid rgba(94,194,105,0.28);
+  opacity: 0;
+  transform: translateY(4px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 160ms var(--ease-premium), transform 160ms var(--ease-premium);
+}
+td.editable-cell.saved::after { opacity: 1; transform: translateY(0) scale(1); }
+td input[type="text"] {
+  font-family: 'DM Sans', sans-serif;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--fg);
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+  transition: all 160ms var(--ease-premium);
+}
+td input[type="text"]:hover { border-color: color-mix(in srgb, var(--border) 90%, var(--fg2) 10%); background: rgba(255,255,255,0.01); }
+td input[type="text"]:focus { border-color: var(--accent); background: var(--bg); box-shadow: var(--shadow-focus); transform: translateY(-1px); }
+td .brand-text { font-size: 11px; color: var(--fg2); }
+
+.chk {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 120ms var(--ease-premium), border-color 120ms var(--ease-premium), background-color 120ms var(--ease-premium), box-shadow 140ms var(--ease-premium), color 120ms var(--ease-premium);
+  font-size: 12px;
+  color: transparent;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.chk:hover { border-color: var(--fg2); transform: translateY(-1px); }
+.chk:active { transform: scale(0.92); }
+.chk.on, .chk.on-red, .chk.on-blue, .chk.on-orange { box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 10px 16px rgba(0,0,0,0.10); }
+.chk.on { border-color: var(--green); background: rgba(94,194,105,0.15); color: var(--green); }
+.chk.on-red { border-color: var(--red); background: rgba(229,91,91,0.15); color: var(--red); }
+.chk.on-blue { border-color: var(--blue); background: rgba(91,158,229,0.15); color: var(--blue); }
+.chk.on-orange { border-color: var(--orange); background: rgba(232,155,58,0.15); color: var(--orange); }
+.chk.pulse { animation: chkPulse 340ms var(--ease-snap); }
+@keyframes chkPulse { 0% { transform: scale(0.88); box-shadow: 0 0 0 0 rgba(245,166,35,0.28); } 65% { transform: scale(1.07); box-shadow: 0 0 0 7px rgba(245,166,35,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245,166,35,0); } }
+
+.remove-btn { background: none; border: none; color: var(--fg2); cursor: pointer; font-size: 16px; padding: 4px; border-radius: 8px; opacity: 0; transition: all 140ms var(--ease-premium); }
+tbody tr:hover .remove-btn { opacity: 1; }
+.remove-btn:hover { color: var(--red); background: rgba(229,91,91,0.12); transform: scale(1.05); }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.48);
+  backdrop-filter: blur(0px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms var(--ease-premium), backdrop-filter 220ms var(--ease-premium);
+}
+.overlay.open { opacity: 1; pointer-events: all; backdrop-filter: blur(8px); }
+.modal {
+  background: color-mix(in srgb, var(--bg2) 96%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 30px;
+  min-width: 380px;
+  max-width: 520px;
+  transform: translateY(14px) scale(0.985);
+  opacity: 0;
+  transition: transform 220ms var(--ease-premium), opacity 220ms var(--ease-premium), box-shadow 220ms var(--ease-premium);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-hover);
+}
+.overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+.modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.02em; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--fg2); margin-bottom: 6px; }
+.field input, .field select {
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), transform 160ms var(--ease-premium), background-color 160ms var(--ease-premium);
+}
+.field input:hover, .field select:hover { border-color: color-mix(in srgb, var(--fg2) 75%, var(--border)); }
+.field input:focus, .field select:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); transform: translateY(-1px); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+.print-crew-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.print-crew-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); transition: all 140ms var(--ease-premium); background: color-mix(in srgb, var(--bg2) 92%, transparent); }
+.print-crew-option:hover { border-color: var(--fg2); transform: translateY(-1px); }
+.print-crew-option.selected { border-color: var(--accent); background: rgba(245,166,35,0.08); box-shadow: inset 0 0 0 1px rgba(245,166,35,0.12); }
+
+@media print {
+  @page { margin: 10mm 8mm; }
+  body { background: #fff !important; color: #000 !important; }
+  .header, .sidebar, .main, .overlay { display: none !important; }
+  #print-area { display: block !important; }
+  .print-page { page-break-after: always; break-after: page; padding: 6px 10px; font-family: 'DM Sans', sans-serif; margin: 0; }
+  .print-page:last-child { page-break-after: auto; break-after: auto; }
+  .print-page > div:first-child { break-after: avoid-page; page-break-after: avoid; }
+  .print-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  .print-table thead { display: table-header-group; }
+  .print-table tfoot { display: table-footer-group; }
+  .print-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .print-table th { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; text-align: left; padding: 3px 4px; border-bottom: 1.5px solid #333; background: #f0f0f0; }
+  .print-table td { padding: 3px 4px; border-bottom: 1px solid #ccc; height: 18px; line-height: 1.2; }
+  .print-cat-row td { background: #e0e0e0 !important; font-weight: 700; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 4px !important; height: auto !important; }
+  .print-cat-row { break-after: avoid-page; page-break-after: avoid; }
+  .print-chk { display: inline-block; width: 11px; height: 11px; border: 1.5px solid #444; border-radius: 2px; vertical-align: middle; }
+  .print-footer { margin-top: 8px; font-size: 9px; color: #666; break-inside: avoid; page-break-inside: avoid; }
+  .print-sig { display: flex; justify-content: space-between; margin-top: 6px; }
+  .print-sig-line { border-bottom: 1px solid #999; min-width: 160px; display: inline-block; }
+}
+#print-area { display: none; }
+#print-area .print-page { display: block; }
+
+.empty-state { text-align: center; padding: 72px 20px; color: var(--fg2); border: 1px dashed color-mix(in srgb, var(--border) 82%, var(--fg2) 18%); border-radius: calc(var(--radius) + 2px); background: color-mix(in srgb, var(--bg2) 94%, transparent); box-shadow: var(--shadow-soft); }
+.empty-state .icon { font-size: 52px; margin-bottom: 14px; filter: drop-shadow(0 12px 22px rgba(0,0,0,0.12)); }
+.empty-state p { font-size: 14px; font-weight: 600; }
+
+.cat-row { cursor: pointer; user-select: none; }
+.cat-row td { background: linear-gradient(180deg, color-mix(in srgb, var(--bg3) 96%, white 4%), var(--bg3)); padding: 10px 8px !important; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--fg2); border-bottom: 1px solid var(--border) !important; transition: background-color 160ms var(--ease-premium), transform 160ms var(--ease-premium); }
+.cat-row:hover td { background: color-mix(in srgb, var(--bg3) 82%, var(--bg) 18%); }
+.cat-icon { margin-right: 8px; font-size: 15px; }
+.cat-chevron { display: inline-block; transition: transform 200ms var(--ease-premium); margin-right: 6px; font-size: 11px; }
+.cat-chevron.collapsed { transform: rotate(-90deg); }
+.cat-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; background: var(--bg); padding: 2px 7px; border-radius: 20px; margin-left: 8px; font-weight: 600; }
+
+.conflict-banner { background: rgba(229,91,91,0.08); border: 1px solid rgba(229,91,91,0.4); border-radius: calc(var(--radius) + 1px); padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 10px; box-shadow: var(--shadow-soft); }
+.conflict-banner .cb-icon { font-size: 20px; flex-shrink: 0; }
+.conflict-banner .cb-title { font-weight: 800; font-size: 13px; color: var(--red); margin-bottom: 4px; }
+.conflict-banner .cb-list { font-size: 12px; color: var(--fg2); line-height: 1.7; }
+.conflict-banner .cb-id { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--red); }
+tr.conflict-row td { background: rgba(229,91,91,0.055) !important; }
+tr.conflict-row td.tool-id { color: var(--red) !important; }
+.conflict-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin-left: 6px; vertical-align: middle; animation: pulse-dot 1.5s infinite; box-shadow: 0 0 0 0 rgba(229,91,91,0.3); }
+@keyframes pulse-dot { 0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(229,91,91,0.28)} 50%{opacity:0.35; box-shadow:0 0 0 6px rgba(229,91,91,0)} }
+
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.crew-card {
+  background: color-mix(in srgb, var(--bg2) 95%, transparent);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 1px);
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-premium), border-color 160ms var(--ease-premium), box-shadow 180ms var(--ease-premium), background-color 180ms var(--ease-premium);
+  box-shadow: var(--shadow-soft);
+}
+.crew-card:hover { border-color: color-mix(in srgb, var(--accent) 36%, var(--border)); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.crew-card .cc-name { font-size: 17px; font-weight: 800; margin-bottom: 12px; }
+.crew-card .cc-stats { display: flex; gap: 14px; flex-wrap: wrap; }
+.crew-card .cc-stat { text-align: center; }
+.crew-card .cc-stat .num { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; }
+.crew-card .cc-stat .lbl { font-size: 10px; color: var(--fg2); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+.conflict-table-wrap { background: color-mix(in srgb, var(--bg2) 95%, transparent); border: 1px solid var(--border); border-radius: calc(var(--radius) + 1px); overflow: hidden; box-shadow: var(--shadow-soft); }
+.conflict-table-wrap table { width: 100%; border-collapse: collapse; }
+.conflict-table-wrap thead th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--fg2); text-align: left; padding: 12px 14px; background: linear-gradient(180deg, color-mix(in srgb, var(--bg3) 96%, white 4%), var(--bg3)); border-bottom: 1px solid var(--border); }
+.conflict-table-wrap tbody td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+.conflict-table-wrap tbody tr:last-child td { border-bottom: none; }
+
+.conflict-banner .cb-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.conflict-banner .cb-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.conflict-link { margin-left: 10px; border: none; background: rgba(229,91,91,0.1); color: var(--red); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; border-radius: 999px; padding: 4px 8px; cursor: pointer; transition: transform 140ms var(--ease-premium), background-color 140ms var(--ease-premium), box-shadow 140ms var(--ease-premium); }
+.conflict-link:hover { background: rgba(229,91,91,0.16); transform: translateY(-1px); box-shadow: var(--shadow-soft); }
+.conflict-link:active { transform: scale(0.97); }
+.conflict-badge, .shared-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.03em;
+}
+.conflict-badge { background: rgba(229,91,91,0.1); color: var(--red); border: 1px solid rgba(229,91,91,0.24); }
+.conflict-badge.critical { background: rgba(229,91,91,0.14); }
+.shared-badge { background: rgba(91,158,229,0.12); color: var(--blue); border: 1px solid rgba(91,158,229,0.22); }
+.conflict-modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.conflict-modal-copy { font-size:13px; color:var(--fg2); line-height:1.6; margin-bottom:16px; }
+.conflict-modal-stack { display:flex; flex-direction:column; gap:12px; }
+.conflict-entry { border:1px solid var(--border); border-radius:14px; padding:14px; background: color-mix(in srgb, var(--bg) 58%, transparent); transition: border-color 160ms var(--ease-premium), transform 160ms var(--ease-premium), box-shadow 160ms var(--ease-premium), background-color 160ms var(--ease-premium); }
+.conflict-entry.selected { border-color: color-mix(in srgb, var(--accent) 70%, var(--border)); box-shadow: var(--shadow-soft); background: rgba(245,166,35,0.06); }
+.conflict-entry-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.conflict-entry-title { font-size:14px; font-weight:800; margin-bottom:4px; }
+.conflict-entry-meta { font-size:12px; color:var(--fg2); line-height:1.5; }
+.conflict-actions-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px; }
+.conflict-actions-grid .field { margin-bottom:0; }
+.conflict-note { border:1px solid var(--border); border-radius:12px; padding:12px 14px; background: color-mix(in srgb, var(--bg) 72%, transparent); font-size:12px; color:var(--fg2); line-height:1.6; }
+.conflict-note strong { color: var(--fg); }
+.conflict-note.critical { border-color: rgba(229,91,91,0.26); background: rgba(229,91,91,0.08); }
+.conflict-footer-actions { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.btn-ghost { background: transparent; }
+.btn-ghost:hover { background: rgba(255,255,255,0.04); }
+.btn-blue { background: rgba(91,158,229,0.14); color: var(--blue); border-color: rgba(91,158,229,0.26); }
+.btn-blue:hover { background: rgba(91,158,229,0.2); }
+.conflict-table-action { text-align:right; white-space:nowrap; }
+@media (max-width: 760px) {
+  .conflict-actions-grid { grid-template-columns: 1fr; }
+  .conflict-modal-head, .conflict-entry-top { flex-direction:column; }
+}
+.section-title { font-size: 14px; font-weight: 700; color: var(--fg2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; margin-top: 8px; }
+.overview-hero .summary-card { flex: 1; min-width: 110px; }
+
+.checkin-wrap { background: color-mix(in srgb, var(--bg2) 95%, transparent); border: 1px solid var(--border); border-radius: calc(var(--radius) + 1px); overflow: hidden; box-shadow: var(--shadow-soft); }
+.checkin-cat-header { background: linear-gradient(180deg, color-mix(in srgb, var(--bg3) 96%, white 4%), var(--bg3)); padding: 8px 16px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--fg2); border-bottom: 1px solid var(--border); }
+.checkin-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background-color 160ms var(--ease-premium); }
+.checkin-row:nth-child(even) { background: color-mix(in srgb, var(--bg3) 50%, transparent); }
+.checkin-row:hover { background: rgba(245,166,35,0.04); }
+.checkin-row .ci-id { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: var(--accent); min-width: 80px; }
+.checkin-row .ci-type { font-size: 13px; min-width: 130px; color: var(--fg2); }
+.checkin-row .ci-btns { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.ci-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--fg2); cursor: pointer; font-size: 12px; font-weight: 700; font-family: 'DM Sans', sans-serif; transition: transform 120ms var(--ease-premium), border-color 120ms var(--ease-premium), background-color 120ms var(--ease-premium), box-shadow 140ms var(--ease-premium), color 120ms var(--ease-premium); }
+.ci-btn:hover { border-color: var(--fg2); transform: translateY(-1px); }
+.ci-btn:active { transform: scale(0.98); }
+.ci-btn.ci-ok { border-color: var(--green); background: rgba(94,194,105,0.15); color: var(--green); }
+.ci-btn.ci-dmg { border-color: var(--red); background: rgba(229,91,91,0.15); color: var(--red); }
+.ci-btn.ci-rep { border-color: var(--blue); background: rgba(91,158,229,0.15); color: var(--blue); }
+.ci-btn.ci-miss { border-color: var(--orange); background: rgba(232,155,58,0.15); color: var(--orange); }
+.checkin-progress { height: 8px; background: color-mix(in srgb, var(--bg3) 75%, transparent); border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+.checkin-progress-bar { height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--green) 80%, white 20%), var(--green)); transition: width 260ms var(--ease-premium); border-radius: 999px; }
+
+.last-checked { font-size: 10px; color: var(--fg2); font-style: italic; }
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  min-width: 260px;
+  max-width: 360px;
+  background: color-mix(in srgb, var(--bg2) 96%, transparent);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 14px;
+  z-index: 300;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity 220ms var(--ease-premium), transform 220ms var(--ease-premium), border-color 220ms var(--ease-premium);
+  pointer-events: none;
+  box-shadow: var(--shadow-hover);
+  overflow: hidden;
+}
+.toast.show { opacity: 1; transform: translateY(0) scale(1); }
+.toast[data-type="success"] { border-color: rgba(94,194,105,0.35); }
+.toast[data-type="error"] { border-color: rgba(229,91,91,0.38); }
+.toast[data-type="info"] { border-color: rgba(91,158,229,0.35); }
+.toast-inner { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px 16px; }
+.toast-icon { width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
+.toast[data-type="success"] .toast-icon { background: rgba(94,194,105,0.12); color: var(--green); }
+.toast[data-type="error"] .toast-icon { background: rgba(229,91,91,0.12); color: var(--red); }
+.toast[data-type="info"] .toast-icon { background: rgba(91,158,229,0.12); color: var(--blue); }
+.toast-copy { min-width: 0; }
+.toast-title { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 3px; color: var(--fg2); }
+.toast-message { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--fg); }
+.toast-progress { height: 3px; width: 100%; background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, white 45%)); transform-origin: left; transform: scaleX(1); }
+.toast.show .toast-progress { animation: toastProgress 2500ms linear forwards; }
+@keyframes toastProgress { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+@media (max-width: 860px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .main { padding: 20px; }
+  .toolbar { gap: 10px; }
+  .search-box { width: 100%; max-width: 100%; order: 10; }
+  .modal { min-width: min(92vw, 380px); }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left"><div class="logo">TOOL TRACK <span>Crew Equipment Manager</span></div></div>
+  <div class="header-actions">
+    <button class="btn btn-icon" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">🌙</button>
+    <button class="btn" onclick="openPrefixModal()">🏷️ Prefixes</button>
+    <button class="btn" onclick="openPrintModal()">🖨️ Print</button>
+    <button class="btn" onclick="importData()">📥 Import</button>
+    <button class="btn" onclick="exportData()">📦 Export</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-title">Crews</div>
+    <div id="crew-list"></div>
+    <div class="sidebar-bottom"><button class="btn btn-accent" style="width:100%;" onclick="openAddCrew()">+ New Crew</button></div>
+  </div>
+  <div class="main" id="main-content"></div>
+</div>
+
+<!-- ADD TOOL -->
+<div class="overlay" id="add-tool-modal"><div class="modal">
+  <h3>Add Tool</h3>
+  <div class="field"><label>Tool ID</label><input type="text" id="new-tool-id" placeholder="e.g. BA 099" oninput="onToolIdInput()" style="text-transform:uppercase"></div>
+  <div id="tool-type-detect"></div>
+  <div id="tool-type-manual" style="display:none">
+    <div class="field"><label>Tool Type</label><select id="new-tool-type"></select></div>
+    <div class="field"><label>Or custom type</label><input type="text" id="new-tool-custom" placeholder="Leave blank to use dropdown"></div>
+  </div>
+  <div id="tool-new-prefix" style="display:none">
+    <div style="background:rgba(245,166,35,0.1);border:1px solid var(--accent);border-radius:8px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-weight:700;font-size:12px;color:var(--accent);margin-bottom:6px">New Prefix: <span id="new-prefix-label" style="font-family:'JetBrains Mono',monospace"></span></div>
+      <div class="field" style="margin-bottom:8px"><select id="new-prefix-type-select" style="font-family:'DM Sans',sans-serif;width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:13px"></select></div>
+      <div class="field" style="margin-bottom:0"><input type="text" id="new-prefix-type-custom" placeholder="Or type a new tool type" style="font-family:'DM Sans',sans-serif;width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:13px"></div>
+    </div>
+  </div>
+  <div class="field"><label>Brand (optional)</label><input type="text" id="new-tool-brand" placeholder="e.g. Milwaukee, DeWalt"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('add-tool-modal')">Cancel</button><button class="btn btn-accent" onclick="addTool()">Add Tool</button></div>
+</div></div>
+
+<!-- ADD CREW -->
+<div class="overlay" id="add-crew-modal"><div class="modal">
+  <h3>Add New Crew</h3>
+  <div class="field"><label>Crew Name</label><input type="text" id="new-crew-name" placeholder="e.g. Unit 54"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('add-crew-modal')">Cancel</button><button class="btn btn-accent" onclick="addCrew()">Create Crew</button></div>
+</div></div>
+
+<!-- PRINT -->
+<div class="overlay" id="print-modal"><div class="modal">
+  <h3>Print Weekly Sheets</h3>
+  <div class="field"><label>Week of</label><input type="date" id="print-week-date"></div>
+  <div class="field"><label>Select Crews</label><div id="print-crew-list" class="print-crew-list"></div></div>
+  <div style="margin-bottom:14px"><label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="print-prefill" checked> Pre-fill known assignments</label></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('print-modal')">Cancel</button><button class="btn btn-accent" onclick="doPrint()">🖨️ Print</button></div>
+</div></div>
+
+<!-- RENAME -->
+<div class="overlay" id="rename-crew-modal"><div class="modal">
+  <h3>Rename Crew</h3>
+  <div class="field"><label>New Name</label><input type="text" id="rename-crew-input"></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('rename-crew-modal')">Cancel</button><button class="btn btn-accent" onclick="renameCrew()">Save</button></div>
+</div></div>
+
+<!-- DELETE -->
+<div class="overlay" id="delete-crew-modal"><div class="modal">
+  <h3>Delete Crew</h3>
+  <p style="font-size:14px;color:var(--fg2);margin-bottom:8px;">Delete <strong id="delete-crew-name"></strong> and all tools?</p>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('delete-crew-modal')">Cancel</button><button class="btn btn-danger" onclick="confirmDeleteCrew()">Delete</button></div>
+</div></div>
+
+<!-- TRANSFER -->
+<div class="overlay" id="transfer-modal"><div class="modal">
+  <h3>Transfer Tool</h3>
+  <p style="font-size:13px;color:var(--fg2);margin-bottom:6px">Move <strong id="transfer-tool-id" style="font-family:'JetBrains Mono',monospace;color:var(--accent)"></strong> to:</p>
+  <div class="field"><label>Destination Crew</label><select id="transfer-dest"></select></div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('transfer-modal')">Cancel</button><button class="btn btn-accent" onclick="confirmTransfer()">Transfer</button></div>
+</div></div>
+
+
+<!-- CONFLICTS -->
+<div class="overlay" id="conflict-modal"><div class="modal" style="max-width:760px;width:min(760px,calc(100vw - 32px))">
+  <div id="conflict-modal-content"></div>
+</div></div>
+
+<!-- PREFIXES -->
+<div class="overlay" id="prefix-modal"><div class="modal" style="max-width:520px">
+  <h3>Tool ID Prefixes</h3>
+  <p style="font-size:12px;color:var(--fg2);margin-bottom:14px">Auto-detects tool type from ID prefix.</p>
+  <div id="prefix-list" style="max-height:300px;overflow-y:auto;margin-bottom:14px"></div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <input type="text" id="add-prefix-code" placeholder="Code" style="font-family:'JetBrains Mono',monospace;width:80px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:13px;text-transform:uppercase">
+    <input type="text" id="add-prefix-type" placeholder="Tool type" style="font-family:'DM Sans',sans-serif;flex:1;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:13px">
+    <button class="btn btn-accent btn-sm" onclick="addPrefixManual()">Add</button>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('prefix-modal')">Done</button></div>
+</div></div>
+
+<div id="print-area"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+const CATEGORIES = {
+  "Power":{icon:"⚡",types:["Battery Charger","Battery"]},
+  "Staplers":{icon:"📌",types:["Soffit Stapler","Narrow Crown Stapler"]},
+  "Saws":{icon:"🪚",types:["Circular Saw",'Circular Saw 4.5"',"Reciprocating Saw","Jig Saw"]},
+  "Drills":{icon:"🔩",types:["Impact Drill","Drill Driver","Speed Drill","Hammer Drill"]},
+  "Grinders":{icon:"⚙️",types:["Angle Grinder","Corded Angle Grinder","Oscillating Tool"]},
+  "Other":{icon:"🔧",types:["Leaf Blower"]},
+};
+function mk(id,type,brand){return{id,type,brand:brand||"",assignedTo:"",inTruck:true,damaged:false,repair:false,missing:false,notes:"",lastChecked:""};}
+const INITIAL = {
+  "Unit 51":{label:"Unit 51",tools:[mk("BC 015","Battery Charger"),mk("BA 045","Battery"),mk("BA 081","Battery"),mk("BA 059","Battery"),mk("BA 012","Battery"),mk("BA 070","Battery"),mk("BA 038","Battery"),mk("BA 020","Battery"),mk("BA 091","Battery"),mk("SS 027","Soffit Stapler"),mk("SS 025","Soffit Stapler"),mk("SS 019","Soffit Stapler"),mk("SS 003","Soffit Stapler"),mk("SS 001","Soffit Stapler"),mk("SS 014","Soffit Stapler"),mk("SS 021","Narrow Crown Stapler"),mk("CS 002","Circular Saw"),mk("CS 018","Circular Saw"),mk("OSC 06","Oscillating Tool"),mk("LB 006","Leaf Blower"),mk("DR 009","Hammer Drill"),mk("AG 007","Angle Grinder"),mk("AG ???","Corded Angle Grinder"),mk("JS 001","Jig Saw")]},
+  "Unit 52":{label:"Unit 52",tools:[mk("BC 019","Battery Charger"),mk("BA 055","Battery"),mk("BA 024","Battery"),mk("BA 021","Battery"),mk("BA 062","Battery"),mk("BA 004","Battery"),mk("SS 002","Soffit Stapler"),mk("SS 023","Soffit Stapler"),mk("SS 011","Soffit Stapler"),mk("SS 018","Soffit Stapler"),mk("CS 001","Circular Saw"),mk("CS 009","Circular Saw"),mk("CC 005",'Circular Saw 4.5"'),mk("ID 060","Impact Drill"),mk("ID 056","Impact Drill"),mk("ID 034","Impact Drill"),mk("ID ???","Impact Drill"),mk("DR 005","Speed Drill"),mk("RS 009","Reciprocating Saw"),mk("LB 005","Leaf Blower"),mk("OSC 06","Oscillating Tool")]},
+  "Unit 53":{label:"Unit 53",tools:[mk("BC 017","Battery Charger"),mk("BA 018","Battery"),mk("BA 043","Battery"),mk("BA 089","Battery"),mk("ID 037","Impact Drill"),mk("ID 033","Impact Drill"),mk("ID 024","Impact Drill"),mk("SS 013","Soffit Stapler"),mk("SS 015","Soffit Stapler"),mk("SS 024","Soffit Stapler"),mk("SS 011","Soffit Stapler"),mk("OSC 08","Oscillating Tool"),mk("DR 010","Drill Driver"),mk("CS 009","Circular Saw"),mk("CS 012","Circular Saw")]},
+};
+
+let data={},activeCrew="__overview__",searchTerm="",crewToDelete="",printSelected=new Set(),collapsedCats={},checkinMode=false,checkinState={},transferToolIdx=-1,pendingEffects=[],toastTimer=null,sharedConflictIds=new Set(),conflictModalState={toolId:"",selectedCrew:""};
+const DEFAULT_PREFIXES={"BC":"Battery Charger","BA":"Battery","ID":"Impact Drill","SS":"Soffit Stapler","OSC":"Oscillating Tool","DR":"Drill Driver","CS":"Circular Saw","CC":'Circular Saw 4.5"',"RS":"Reciprocating Saw","LB":"Leaf Blower","AG":"Angle Grinder","JS":"Jig Saw"};
+let prefixMap={};
+
+function getCat(t){for(const[c,cfg]of Object.entries(CATEGORIES))if(cfg.types.includes(t))return c;return"Other";}
+function groupByCategory(tools){const g={},o=Object.keys(CATEGORIES),r=[];for(const t of tools){const c=getCat(t.type);if(!g[c])g[c]=[];g[c].push(t);}for(const c of o)if(g[c])r.push([c,g[c]]);for(const[c,i]of Object.entries(g))if(!o.includes(c))r.push([c,i]);return r;}
+
+const SK="tool_tracker_v1";
+function loadData(){try{const s=localStorage.getItem(SK);if(s)data=JSON.parse(s);else data=JSON.parse(JSON.stringify(INITIAL));}catch{data=JSON.parse(JSON.stringify(INITIAL));}for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";}if(activeCrew!=="__overview__"&&!data[activeCrew]){const k=Object.keys(data);activeCrew=k[0]||"__overview__";}}
+function saveData(){try{localStorage.setItem(SK,JSON.stringify(data));}catch{}}
+function loadPrefixes(){try{const s=localStorage.getItem("tool_tracker_prefixes");prefixMap=s?JSON.parse(s):{...DEFAULT_PREFIXES};}catch{prefixMap={...DEFAULT_PREFIXES};}}
+function savePrefixes(){try{localStorage.setItem("tool_tracker_prefixes",JSON.stringify(prefixMap));}catch{}}
+function loadConflictPrefs(){try{const s=localStorage.getItem("tool_tracker_shared_conflicts");sharedConflictIds=new Set(s?JSON.parse(s):[]);}catch{sharedConflictIds=new Set();}}
+function saveConflictPrefs(){try{localStorage.setItem("tool_tracker_shared_conflicts",JSON.stringify([...sharedConflictIds]));}catch{}}
+
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function normalizeId(id){return(id||"").trim().replace(/\s+/g," ").toUpperCase();}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function findIdOccurrences(id){
+  const norm=normalizeId(id), entries=[];
+  for(const [crewKey,crew] of Object.entries(data)){
+    crew.tools.forEach((tool,idx)=>{ if(normalizeId(tool.id)===norm) entries.push({crew:crewKey,idx,type:tool.type,origId:tool.id,brand:tool.brand||"",assignedTo:tool.assignedTo||"",notes:tool.notes||""}); });
+  }
+  return entries;
+}
+function getConflictGroups(opts={}){
+  const includeShared=!!opts.includeShared;
+  const map={};
+  for(const [crewKey,crew] of Object.entries(data)){
+    crew.tools.forEach((tool,idx)=>{
+      const norm=normalizeId(tool.id);
+      if(!map[norm])map[norm]=[];
+      map[norm].push({crew:crewKey,idx,type:tool.type,origId:tool.id,brand:tool.brand||"",assignedTo:tool.assignedTo||"",notes:tool.notes||""});
+    });
+  }
+  const groups={};
+  for(const [norm,entries] of Object.entries(map)){
+    if(entries.length<2)continue;
+    const shared=sharedConflictIds.has(norm);
+    if(shared && !includeShared)continue;
+    const uniqueTypes=[...new Set(entries.map(e=>e.type||"Unknown"))];
+    groups[norm]={
+      normId:norm,
+      displayId:entries[0].origId,
+      entries,
+      shared,
+      typeMismatch:uniqueTypes.length>1,
+      severity:uniqueTypes.length>1?'critical':'warning',
+      typeSummary:uniqueTypes.join(' / ')
+    };
+  }
+  return groups;
+}
+function getCrewConflictGroups(crewKey, opts={}){
+  const all=getConflictGroups(opts), result={};
+  for(const [norm,group] of Object.entries(all))if(group.entries.some(entry=>entry.crew===crewKey))result[norm]=group;
+  return result;
+}
+function getConflictCountsForCrew(crewKey){
+  const active=getCrewConflictGroups(crewKey);
+  const withShared=getCrewConflictGroups(crewKey,{includeShared:true});
+  const shared=Object.values(withShared).filter(group=>group.shared).length;
+  const critical=Object.values(active).filter(group=>group.typeMismatch).length;
+  return {active:Object.keys(active).length,shared,critical};
+}
+function getAllConflicts(){return getConflictGroups();}
+function cleanupSharedConflicts(){
+  const groups=getConflictGroups({includeShared:true});
+  const valid=new Set(Object.values(groups).filter(group=>group.shared).map(group=>group.normId));
+  let changed=false;
+  for(const id of [...sharedConflictIds])if(!valid.has(id)){ sharedConflictIds.delete(id); changed=true; }
+  if(changed)saveConflictPrefs();
+}
+function getNextAvailableId(id){
+  const norm=normalizeId(id);
+  const match=norm.match(/^([A-Z]+)\s*(\d+)$/);
+  const taken=new Set();
+  for(const crew of Object.values(data))for(const tool of crew.tools)taken.add(normalizeId(tool.id));
+  if(match){
+    const prefix=match[1], digits=match[2], width=digits.length, start=parseInt(digits,10);
+    for(let i=start+1;i<start+500;i++){
+      const candidate=`${prefix} ${String(i).padStart(width,'0')}`;
+      if(!taken.has(candidate))return candidate;
+    }
+  }
+  let suffix='A', candidate=`${norm}-${suffix}`;
+  while(taken.has(candidate)){ suffix=String.fromCharCode(suffix.charCodeAt(0)+1); candidate=`${norm}-${suffix}`; }
+  return candidate;
+}
+function queueEffect(effect){pendingEffects.push(effect);}
+function applyPendingEffects(){
+  if(!pendingEffects.length)return;
+  const effects=[...pendingEffects];
+  pendingEffects=[];
+  for(const effect of effects){
+    if(effect.type==='status'){
+      const row=document.querySelector(`tr[data-tool-id="${CSS.escape(effect.toolId)}"]`);
+      if(!row)continue;
+      row.classList.remove('row-flash'); void row.offsetWidth; row.classList.add('row-flash');
+      const chk=row.querySelector(`.chk[data-field="${effect.field}"]`);
+      if(chk){ chk.classList.remove('pulse'); void chk.offsetWidth; chk.classList.add('pulse'); }
+    }
+    if(effect.type==='spotlight'){
+      const row=document.querySelector(`tr[data-tool-id="${CSS.escape(effect.toolId)}"]`);
+      if(!row)continue;
+      row.classList.remove('row-flash'); void row.offsetWidth; row.classList.add('row-flash');
+      row.scrollIntoView({block:'center',behavior:'smooth'});
+    }
+  }
+}
+function flashSavedCell(input){
+  const cell=input?.closest('.editable-cell');
+  if(!cell)return;
+  cell.classList.remove('saved');
+  void cell.offsetWidth;
+  cell.classList.add('saved');
+  setTimeout(()=>cell.classList.remove('saved'),1100);
+}
+function setCellEditing(input,isEditing){
+  const row=input?.closest('tr');
+  if(row)row.classList.toggle('is-editing',!!isEditing);
+}
+
+function render(){renderSidebar();renderMain();}
+function renderSidebar(){const el=document.getElementById("crew-list"),ov=activeCrew==="__overview__"?" active":"";el.innerHTML=`<div class="crew-item${ov}" onclick="selectCrew('__overview__')" style="margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:12px"><span>📊 Overview</span></div>`+Object.keys(data).map(k=>{const c=data[k],a=k===activeCrew?" active":"";return`<div class="crew-item${a}" onclick="selectCrew('${k}')"><span>${c.label||k}</span><span class="crew-count">${c.tools.length}</span></div>`;}).join("");}
+
+function renderMain(){
+  const el=document.getElementById("main-content");
+  if(activeCrew==="__overview__"){renderOverview(el);return;}
+  const crew=data[activeCrew];
+  if(!crew){el.innerHTML=`<div class="empty-state"><div class="icon">🔧</div><p>No crews yet. Create one to start tracking.</p></div>`;return;}
+  if(checkinMode){renderCheckin(el,crew);return;}
+
+  const tools=crew.tools.filter(t=>t.id.toLowerCase().includes(searchTerm)||t.type.toLowerCase().includes(searchTerm)||t.assignedTo.toLowerCase().includes(searchTerm)||(t.brand||"").toLowerCase().includes(searchTerm));
+  const total=crew.tools.length,inTruck=crew.tools.filter(t=>t.inTruck).length,damaged=crew.tools.filter(t=>t.damaged).length,inRepair=crew.tools.filter(t=>t.repair).length,missing=crew.tools.filter(t=>t.missing).length;
+  const conflicts=getCrewConflictGroups(activeCrew),allCrewConflictGroups=getCrewConflictGroups(activeCrew,{includeShared:true});
+  const conflictNorm={};for(const cid of Object.keys(conflicts))conflictNorm[normalizeId(cid)]=cid;
+  const cc=Object.keys(conflicts).length;
+  const counts=getConflictCountsForCrew(activeCrew);
+  const preview=Object.values(conflicts).slice(0,3).map(group=>`<span class="cb-id">${esc(group.displayId)}</span> → ${group.entries.filter(entry=>entry.crew!==activeCrew).map(entry=>'<b>'+(data[entry.crew].label||entry.crew)+'</b>').join(', ')}`).join(' · ');
+  const cb=cc>0?`<div class="conflict-banner"><span class="cb-icon">⚠️</span><div><div class="cb-title">${cc} active conflict${cc>1?'s':''}${counts.critical>0?` · ${counts.critical} critical`:''}</div><div class="cb-list">${preview}${cc>3?' · …':''}</div><div class="cb-meta">${counts.shared>0?`<span class="shared-badge">${counts.shared} shared ID${counts.shared>1?'s':''} hidden</span>`:''}</div><div class="cb-actions"><button class="btn btn-danger btn-sm" onclick="openConflictModal()">Review conflicts</button>${counts.shared>0?`<button class="btn btn-blue btn-sm" onclick="openConflictModal('', '${activeCrew}', true)">View shared IDs</button>`:''}</div></div></div>`:(counts.shared>0?`<div class="conflict-banner" style="border-color:rgba(91,158,229,0.34);background:rgba(91,158,229,0.08)"><span class="cb-icon">ℹ️</span><div><div class="cb-title" style="color:var(--blue)">No active conflicts</div><div class="cb-list">${counts.shared} intentionally shared ID${counts.shared>1?'s are':' is'} currently ignored.</div><div class="cb-actions"><button class="btn btn-blue btn-sm" onclick="openConflictModal('', '${activeCrew}', true)">Review shared IDs</button></div></div></div>`:"");
+
+  el.innerHTML=`
+    <div class="toolbar">
+      <h2>${crew.label||activeCrew} <button class="btn btn-icon btn-sm" onclick="openRenameCrew()" title="Rename" style="font-size:14px;vertical-align:middle;margin-left:4px">✏️</button></h2>
+      <input class="search-box" type="text" placeholder="Search…" value="${searchTerm}" oninput="onSearch(this.value)">
+      <button class="btn btn-green" onclick="startCheckin()">✅ Weekly Check-In</button>
+      <button class="btn" onclick="openAddTool()">+ Add Tool</button>
+      <button class="btn btn-danger btn-sm" onclick="openDeleteCrew('${activeCrew}')">Delete Crew</button>
+    </div>
+    <div class="summary-row">
+      <div class="summary-card"><div class="label">Total</div><div class="value val-total">${total}</div></div>
+      <div class="summary-card"><div class="label">In Truck</div><div class="value val-ok">${inTruck}</div></div>
+      <div class="summary-card"><div class="label">Damaged</div><div class="value val-dmg">${damaged}</div></div>
+      <div class="summary-card"><div class="label">Repair</div><div class="value val-rep">${inRepair}</div></div>
+      <div class="summary-card"><div class="label">Missing</div><div class="value val-miss">${missing}</div></div>
+      ${cc>0?`<div class="summary-card" style="border-color:var(--red)"><div class="label">Conflicts</div><div class="value val-dmg">${cc}</div></div>`:''}
+      ${counts.shared>0?`<div class="summary-card" style="border-color:rgba(91,158,229,0.34)"><div class="label">Shared IDs</div><div class="value val-rep">${counts.shared}</div></div>`:''}
+    </div>${cb}
+    <div class="table-wrap"><table>
+      <thead><tr><th>ID</th><th>Type</th><th>Brand</th><th>Assigned To</th><th>Truck</th><th>Dmg</th><th>Repair</th><th>Missing</th><th>Checked</th><th>Notes</th><th></th><th></th></tr></thead>
+      <tbody>${groupByCategory(tools).map(([cat,items])=>{
+        const cfg=CATEGORIES[cat]||{icon:"🔧"},col=collapsedCats[activeCrew+"__"+cat],ch=col?" collapsed":"";
+        const hdr=`<tr class="cat-row" onclick="toggleCat('${activeCrew}','${cat}')"><td colspan="12"><span class="cat-chevron${ch}">▼</span><span class="cat-icon">${cfg.icon}</span>${cat}<span class="cat-count">${items.length}</span></td></tr>`;
+        if(col)return hdr;
+        return hdr+items.map(t=>{
+          const ri=crew.tools.indexOf(t), normId=normalizeId(t.id), activeConflict=conflictNorm[normId], conflictGroup=activeConflict?conflicts[activeConflict]:null, anyConflictGroup=allCrewConflictGroups[normId], isCon=!!conflictGroup, isShared=!!(anyConflictGroup&&anyConflictGroup.shared);
+          const lc=t.lastChecked?`<span class="last-checked">${t.lastChecked}</span>`:`<span class="last-checked" style="color:var(--orange)">Never</span>`;
+          return`<tr data-tool-id="${normId}"${isCon?' class="conflict-row"':''}>
+            <td class="tool-id">${esc(t.id)}${isCon?'<span class="conflict-dot" title="Conflict in '+conflictGroup.entries.filter(entry=>entry.crew!==activeCrew).map(entry=>data[entry.crew].label||entry.crew).join(', ')+'"></span>':''}${isShared?'<span class="shared-badge" style="margin-left:8px;padding:2px 7px;font-size:10px">Shared</span>':''}${(isCon||isShared)?`<button class="conflict-link" onclick="event.stopPropagation();openConflictModal('${normId}','${activeCrew}',${isShared&&!isCon?'true':'false'})">${isCon?'Resolve':'Review'}</button>`:''}</td>
+            <td>${esc(t.type)}</td><td><span class="brand-text">${esc(t.brand||'—')}</span></td>
+            <td class="editable-cell"><input type="text" value="${esc(t.assignedTo)}" placeholder="—" onfocus="setCellEditing(this,true)" onblur="setCellEditing(this,false)" onchange="updateField('${activeCrew}',${ri},'assignedTo',this.value,this)"></td>
+            <td><div class="chk${t.inTruck?' on':''}" data-field="inTruck" onclick="toggleField('${activeCrew}',${ri},'inTruck',this)">${t.inTruck?'✓':''}</div></td>
+            <td><div class="chk${t.damaged?' on-red':''}" data-field="damaged" onclick="toggleField('${activeCrew}',${ri},'damaged',this)">${t.damaged?'✗':''}</div></td>
+            <td><div class="chk${t.repair?' on-blue':''}" data-field="repair" onclick="toggleField('${activeCrew}',${ri},'repair',this)">${t.repair?'🔧':''}</div></td>
+            <td><div class="chk${t.missing?' on-orange':''}" data-field="missing" onclick="toggleField('${activeCrew}',${ri},'missing',this)">${t.missing?'⚠':''}</div></td>
+            <td>${lc}</td>
+            <td class="editable-cell"><input type="text" value="${esc(t.notes||'')}" placeholder="—" onfocus="setCellEditing(this,true)" onblur="setCellEditing(this,false)" onchange="updateField('${activeCrew}',${ri},'notes',this.value,this)"></td>
+            <td><button class="btn btn-sm btn-icon" title="Transfer to another crew" onclick="openTransfer(${ri})" style="font-size:11px;opacity:0.75">↗️</button></td>
+            <td><button class="remove-btn" title="Remove" onclick="removeTool('${activeCrew}',${ri})">✕</button></td>
+          </tr>`;
+        }).join("");
+      }).join("")}</tbody></table></div>`;
+  requestAnimationFrame(applyPendingEffects);
+}
+
+// ─── CHECK-IN ───────────────────────────────────────────────────────
+function startCheckin(){checkinMode=true;checkinState={};data[activeCrew].tools.forEach((_,i)=>{checkinState[i]=null;});renderMain();}
+function renderCheckin(el,crew){
+  const total=crew.tools.length,done=Object.values(checkinState).filter(v=>v!==null).length,pct=total>0?Math.round(done/total*100):0;
+  el.innerHTML=`
+    <div class="toolbar"><h2>✅ Weekly Check-In — ${crew.label||activeCrew}</h2>
+      <button class="btn" onclick="cancelCheckin()">Cancel</button>
+      <button class="btn btn-green" onclick="finishCheckin()" ${done<total?'disabled':''}>Save (${done}/${total})</button>
+    </div>
+    <div style="font-size:13px;color:var(--fg2);margin-bottom:10px">Go through the truck — tap a status for each tool.</div>
+    <div class="checkin-progress"><div class="checkin-progress-bar" style="width:${pct}%"></div></div>
+    <div class="checkin-wrap">${groupByCategory(crew.tools).map(([cat,items])=>{
+      const cfg=CATEGORIES[cat]||{icon:"🔧"};
+      return`<div class="checkin-cat-header">${cfg.icon} ${cat} (${items.length})</div>`+items.map(t=>{
+        const ri=crew.tools.indexOf(t),st=checkinState[ri];
+        return`<div class="checkin-row"><span class="ci-id">${esc(t.id)}</span><span class="ci-type">${esc(t.type)}</span><div class="ci-btns">
+          <button class="ci-btn${st==='ok'?' ci-ok':''}" onclick="setCheckin(${ri},'ok')">✓ OK</button>
+          <button class="ci-btn${st==='damaged'?' ci-dmg':''}" onclick="setCheckin(${ri},'damaged')">✗ Damaged</button>
+          <button class="ci-btn${st==='repair'?' ci-rep':''}" onclick="setCheckin(${ri},'repair')">🔧 Repair</button>
+          <button class="ci-btn${st==='missing'?' ci-miss':''}" onclick="setCheckin(${ri},'missing')">⚠ Missing</button>
+        </div></div>`;
+      }).join("");
+    }).join("")}</div>`;
+  requestAnimationFrame(applyPendingEffects);
+}
+function setCheckin(i,s){checkinState[i]=checkinState[i]===s?null:s;renderMain();}
+function cancelCheckin(){checkinMode=false;renderMain();}
+function finishCheckin(){const crew=data[activeCrew],today=todayStr();for(const[i,s]of Object.entries(checkinState)){if(!s)continue;const t=crew.tools[parseInt(i)];t.inTruck=s==='ok';t.damaged=s==='damaged';t.repair=s==='repair';t.missing=s==='missing';t.lastChecked=today;}checkinMode=false;saveData();render();toast("Weekly check-in saved for "+crew.tools.length+" tools",'success','Check-in complete');}
+
+// ─── OVERVIEW ───────────────────────────────────────────────────────
+function renderOverview(el){
+  const keys=Object.keys(data),allT=keys.reduce((s,k)=>s+data[k].tools.length,0),allTruck=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.inTruck).length,0),allDmg=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.damaged).length,0),allRep=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.repair).length,0),allMiss=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.missing).length,0);
+  const allGroups=getConflictGroups({includeShared:true});
+  const activeGroups=Object.values(allGroups).filter(group=>!group.shared);
+  const sharedGroups=Object.values(allGroups).filter(group=>group.shared);
+  const cc=activeGroups.length;
+  const cr=activeGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--red)">${esc(group.displayId)}</td><td>${group.typeMismatch?'<span class="conflict-badge critical">ID/type mismatch</span>':'<span class="conflict-badge">Duplicate ID</span>'}</td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-danger btn-sm" onclick="openConflictModal('${group.normId}')">Review</button></td></tr>`).join('');
+  el.innerHTML=`<div class="toolbar"><h2>📊 Fleet Overview</h2>${(cc||sharedGroups.length)?`<button class="btn btn-danger btn-sm" onclick="openConflictModal()">Review conflicts</button>`:''}</div>
+    <div class="overview-hero">
+      <div class="summary-card"><div class="label">Crews</div><div class="value val-total">${keys.length}</div></div>
+      <div class="summary-card"><div class="label">Tools</div><div class="value val-total">${allT}</div></div>
+      <div class="summary-card"><div class="label">In Truck</div><div class="value val-ok">${allTruck}</div></div>
+      <div class="summary-card"><div class="label">Damaged</div><div class="value val-dmg">${allDmg}</div></div>
+      <div class="summary-card"><div class="label">Repair</div><div class="value val-rep">${allRep}</div></div>
+      <div class="summary-card"><div class="label">Missing</div><div class="value val-miss">${allMiss}</div></div>
+      ${cc>0?`<div class="summary-card" style="border-color:var(--red)"><div class="label">Conflicts</div><div class="value val-dmg">${cc}</div></div>`:''}
+      ${sharedGroups.length>0?`<div class="summary-card" style="border-color:rgba(91,158,229,0.34)"><div class="label">Shared IDs</div><div class="value val-rep">${sharedGroups.length}</div></div>`:''}
+    </div>
+    <div class="section-title">Crews</div>
+    <div class="overview-grid">${keys.map(k=>{
+      const c=data[k],t=c.tools.length,truck=c.tools.filter(x=>x.inTruck).length,dmg=c.tools.filter(x=>x.damaged).length,rep=c.tools.filter(x=>x.repair).length,miss=c.tools.filter(x=>x.missing).length;
+      const ccon=activeGroups.filter(group=>group.entries.some(entry=>entry.crew===k)).length;
+      const lcs=c.tools.map(x=>x.lastChecked).filter(Boolean),oldest=lcs.length===t&&lcs.length>0?lcs.sort()[0]:null;
+      const clbl=oldest?'Last full check: '+oldest:(lcs.length>0?lcs.length+'/'+t+' checked':'Never checked');
+      return`<div class="crew-card" onclick="selectCrew('${k}')"><div class="cc-name">${esc(c.label||k)}${ccon>0?' <span class="conflict-dot"></span>':''}</div><div class="cc-stats">
+        <div class="cc-stat"><div class="num val-total">${t}</div><div class="lbl">Tools</div></div>
+        <div class="cc-stat"><div class="num val-ok">${truck}</div><div class="lbl">Truck</div></div>
+        <div class="cc-stat"><div class="num val-dmg">${dmg}</div><div class="lbl">Dmg</div></div>
+        <div class="cc-stat"><div class="num val-rep">${rep}</div><div class="lbl">Repair</div></div>
+        ${miss>0?`<div class="cc-stat"><div class="num val-miss">${miss}</div><div class="lbl">Missing</div></div>`:''}
+        ${ccon>0?`<div class="cc-stat"><div class="num val-dmg">${ccon}</div><div class="lbl">Conflicts</div></div>`:''}
+      </div><div style="margin-top:10px;font-size:11px;color:var(--fg2)">${clbl}</div></div>`;
+    }).join('')}</div>
+    ${cc>0?`<div class="section-title" style="color:var(--red)">⚠️ Tool Conflicts</div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Issue</th><th>Found In</th><th></th></tr></thead><tbody>${cr}</tbody></table></div>`:`<div style="text-align:center;padding:30px;color:var(--green);font-weight:600;font-size:14px">✓ No active conflicts</div>`}
+    ${sharedGroups.length>0?`<div class="section-title" style="margin-top:20px;color:var(--blue)">Shared / intentional duplicate IDs</div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Status</th><th>Found In</th><th></th></tr></thead><tbody>${sharedGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--blue)">${esc(group.displayId)}</td><td><span class="shared-badge">Intentional shared ID</span></td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-blue btn-sm" onclick="openConflictModal('${group.normId}','',true)">Review</button></td></tr>`).join('')}</tbody></table></div>`:''}
+    <div class="section-title" style="margin-top:24px">Inventory by Category</div>
+    <div class="overview-grid">${groupByCategory(keys.flatMap(k=>data[k].tools)).map(([cat,items])=>{
+      const cfg=CATEGORIES[cat]||{icon:"🔧"};
+      return`<div class="crew-card" style="cursor:default"><div class="cc-name">${cfg.icon} ${cat}</div><div class="cc-stats"><div class="cc-stat"><div class="num val-total">${items.length}</div><div class="lbl">Total</div></div><div class="cc-stat"><div class="num val-ok">${items.filter(t=>t.inTruck).length}</div><div class="lbl">Truck</div></div><div class="cc-stat"><div class="num val-dmg">${items.filter(t=>t.damaged).length}</div><div class="lbl">Dmg</div></div><div class="cc-stat"><div class="num val-miss">${items.filter(t=>t.missing).length}</div><div class="lbl">Missing</div></div></div></div>`;
+    }).join('')}</div>`;
+  requestAnimationFrame(applyPendingEffects);
+}
+
+// ─── ACTIONS ────────────────────────────────────────────────────────
+function selectCrew(k){activeCrew=k;searchTerm="";checkinMode=false;render();}
+function onSearch(v){searchTerm=v.toLowerCase();renderMain();}
+function toggleCat(cr,cat){collapsedCats[cr+"__"+cat]=!collapsedCats[cr+"__"+cat];renderMain();}
+function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
+function updateField(cr,i,f,v,input){data[cr].tools[i][f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
+function removeTool(cr,i){data[cr].tools.splice(i,1);saveData();cleanupSharedConflicts();render();toast("Tool removed",'info','Inventory updated');}
+function openModal(id){document.getElementById(id).classList.add("open");}
+function closeModal(id){document.getElementById(id).classList.remove("open");}
+function getPrefix(id){const p=id.trim().split(/\s+/);return p[0]?p[0].toUpperCase():"";}
+function focusConflictInCrew(normId, crewKey){closeModal('conflict-modal');activeCrew=crewKey;searchTerm=normalizeId(normId).toLowerCase();queueEffect({type:'spotlight',toolId:normalizeId(normId)});render();}
+function toggleSharedConflict(normId){const norm=normalizeId(normId);if(sharedConflictIds.has(norm))sharedConflictIds.delete(norm);else sharedConflictIds.add(norm);saveConflictPrefs();cleanupSharedConflicts();render();renderConflictModal(sharedConflictIds.has(norm));toast(sharedConflictIds.has(norm)?'Conflict hidden as an intentional shared ID':'Shared override removed','info',sharedConflictIds.has(norm)?'Shared ID saved':'Conflict restored');}
+function selectConflictEntry(normId, crewKey){conflictModalState.toolId=normalizeId(normId);conflictModalState.selectedCrew=crewKey;renderConflictModal();}
+function openConflictModal(normId="", preferredCrew="", sharedOnly=false){const groups=getConflictGroups({includeShared:true});const available=Object.values(groups).filter(group=>sharedOnly?group.shared:!group.shared);if(!available.length){toast('No conflicts to review','info','All clear');return;}const desired=normId?normalizeId(normId):'';const picked=groups[desired]&&(!sharedOnly||groups[desired].shared)?groups[desired]:available[0];conflictModalState.toolId=picked.normId;conflictModalState.selectedCrew=preferredCrew&&picked.entries.some(entry=>entry.crew===preferredCrew)?preferredCrew:picked.entries[0].crew;renderConflictModal(sharedOnly);openModal('conflict-modal');}
+function renderConflictModal(sharedOnly=false){const host=document.getElementById('conflict-modal-content');if(!host)return;const ordered=Object.values(getConflictGroups({includeShared:true})).filter(group=>sharedOnly?group.shared:true).sort((a,b)=>Number(b.typeMismatch)-Number(a.typeMismatch)||a.displayId.localeCompare(b.displayId));if(!ordered.length){host.innerHTML='<h3>No conflicts</h3><p style="color:var(--fg2)">Everything is resolved.</p>';return;}let group=ordered.find(item=>item.normId===conflictModalState.toolId)||ordered[0];conflictModalState.toolId=group.normId;if(!group.entries.some(entry=>entry.crew===conflictModalState.selectedCrew))conflictModalState.selectedCrew=group.entries[0].crew;const selected=group.entries.find(entry=>entry.crew===conflictModalState.selectedCrew)||group.entries[0];const renameSuggestion=getNextAvailableId(selected.origId);const currentIndex=ordered.findIndex(item=>item.normId===group.normId)+1;host.innerHTML=`<div class="conflict-modal-head"><div><h3 style="margin-bottom:8px">Resolve ${esc(group.displayId)}</h3><div style="display:flex;gap:8px;flex-wrap:wrap">${group.typeMismatch?'<span class="conflict-badge critical">ID/type mismatch</span>':'<span class="conflict-badge">Duplicate ID</span>'}${group.shared?'<span class="shared-badge">Intentional shared ID</span>':''}<span class="shared-badge" style="background:rgba(255,255,255,0.04);color:var(--fg2);border-color:var(--border)">${currentIndex} / ${ordered.length}</span></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button class="btn btn-sm" onclick="stepConflict(-1, ${sharedOnly?'true':'false'})">← Prev</button><button class="btn btn-sm" onclick="stepConflict(1, ${sharedOnly?'true':'false'})">Next →</button></div></div><div class="conflict-modal-copy">${group.typeMismatch?'This ID is attached to different tool types across crews. That is the highest-priority case to fix because the ID can no longer be trusted.':'This tool ID exists in more than one crew. Pick the copy you want to adjust, then rename, remove, or mark the duplicate as intentional.'}</div><div class="conflict-note ${group.typeMismatch?'critical':''}"><strong>${esc(selected.origId)}</strong> is currently selected in <strong>${esc(data[selected.crew].label||selected.crew)}</strong>. ${group.shared?'This group is currently hidden from active conflict counts because it is marked as intentionally shared.':'It is currently counted as an active conflict.'}</div><div class="conflict-modal-stack" style="margin-top:14px">${group.entries.map(entry=>`<div class="conflict-entry ${entry.crew===selected.crew?'selected':''}"><div class="conflict-entry-top"><div><div class="conflict-entry-title">${esc(data[entry.crew].label||entry.crew)} ${entry.crew===selected.crew?'<span class="shared-badge" style="margin-left:8px;padding:2px 7px;font-size:10px">Selected</span>':''}</div><div class="conflict-entry-meta">${esc(entry.type)}${entry.brand?` · ${esc(entry.brand)}`:''}${entry.assignedTo?` · assigned to ${esc(entry.assignedTo)}`:''}</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-sm ${entry.crew===selected.crew?'btn-accent':'btn-ghost'}" onclick="selectConflictEntry('${group.normId}','${entry.crew}')">${entry.crew===selected.crew?'Selected':'Select'}</button><button class="btn btn-sm" onclick="focusConflictInCrew('${group.normId}','${entry.crew}')">Open crew</button></div></div></div>`).join('')}</div><div class="conflict-actions-grid"><div class="field"><label>Rename selected copy</label><input type="text" id="conflict-rename-input" value="${esc(selected.origId)}" style="text-transform:uppercase"></div><div class="field"><label>Suggested next ID</label><div class="conflict-note" style="height:100%;display:flex;align-items:center;justify-content:space-between"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent)">${esc(renameSuggestion)}</span><button class="btn btn-sm" onclick="useConflictSuggestedId('${renameSuggestion.replace(/'/g,"\'")}')">Use</button></div></div></div><div class="conflict-footer-actions"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-accent" onclick="renameConflictSelected(${sharedOnly?'true':'false'})">Save rename</button><button class="btn btn-danger" onclick="removeConflictSelected(${sharedOnly?'true':'false'})">Remove selected copy</button></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ${group.shared?'btn-blue':'btn-ghost'}" onclick="toggleSharedConflict('${group.normId}')">${group.shared?'Unmark shared ID':'Mark as intentional shared ID'}</button></div></div>`;}
+function stepConflict(direction, sharedOnly=false){const ordered=Object.values(getConflictGroups({includeShared:true})).filter(group=>sharedOnly?group.shared:true).sort((a,b)=>Number(b.typeMismatch)-Number(a.typeMismatch)||a.displayId.localeCompare(b.displayId));if(!ordered.length)return;const index=Math.max(0,ordered.findIndex(group=>group.normId===conflictModalState.toolId));const next=(index+direction+ordered.length)%ordered.length;conflictModalState.toolId=ordered[next].normId;conflictModalState.selectedCrew=ordered[next].entries[0].crew;renderConflictModal(sharedOnly);}
+function useConflictSuggestedId(id){const input=document.getElementById('conflict-rename-input');if(input)input.value=normalizeId(id);}
+function renameConflictSelected(sharedOnly=false){const group=getConflictGroups({includeShared:true})[conflictModalState.toolId];if(!group)return;const selected=group.entries.find(entry=>entry.crew===conflictModalState.selectedCrew)||group.entries[0];const input=document.getElementById('conflict-rename-input');const nextId=normalizeId(input?.value||'');if(!nextId)return;data[selected.crew].tools[selected.idx].id=nextId;saveData();cleanupSharedConflicts();render();const remaining=Object.values(getConflictGroups({includeShared:true})).filter(item=>sharedOnly?item.shared:true);if(!remaining.length)closeModal('conflict-modal');else {conflictModalState.toolId=(remaining.find(item=>item.normId===nextId)||remaining[0]).normId;renderConflictModal(sharedOnly);}toast(nextId===selected.origId?'Nothing changed':'Conflict updated after rename','success','Rename saved');}
+function removeConflictSelected(sharedOnly=false){const group=getConflictGroups({includeShared:true})[conflictModalState.toolId];if(!group)return;const selected=group.entries.find(entry=>entry.crew===conflictModalState.selectedCrew)||group.entries[0];data[selected.crew].tools.splice(selected.idx,1);saveData();cleanupSharedConflicts();render();const remaining=Object.values(getConflictGroups({includeShared:true})).filter(item=>sharedOnly?item.shared:true);if(!remaining.length)closeModal('conflict-modal');else {if(!remaining.some(item=>item.normId===conflictModalState.toolId))conflictModalState.toolId=remaining[0].normId;renderConflictModal(sharedOnly);}toast('Selected copy removed from inventory','info','Conflict updated');}
+
+function onToolIdInput(){const id=document.getElementById("new-tool-id").value.trim(),prefix=getPrefix(id);const det=document.getElementById("tool-type-detect"),man=document.getElementById("tool-type-manual"),np=document.getElementById("tool-new-prefix");if(!prefix){det.innerHTML="";man.style.display="none";np.style.display="none";return;}if(prefixMap[prefix]){det.innerHTML=`<div style="background:rgba(94,194,105,0.1);border:1px solid var(--green);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span>✓</span><span style="font-size:13px"><strong style="font-family:'JetBrains Mono',monospace">${esc(prefix)}</strong> → <strong>${esc(prefixMap[prefix])}</strong></span><button class="btn btn-sm" style="margin-left:auto;font-size:11px" onclick="overridePrefix()">Change</button></div>`;man.style.display="none";np.style.display="none";}else{det.innerHTML="";man.style.display="none";np.style.display="block";document.getElementById("new-prefix-label").textContent=prefix;document.getElementById("new-prefix-type-select").innerHTML=Object.entries(CATEGORIES).map(([c,cfg])=>`<optgroup label="${cfg.icon} ${c}">`+cfg.types.map(t=>`<option value="${t}">${t}</option>`).join("")+`</optgroup>`).join("");}}
+function overridePrefix(){document.getElementById("tool-type-detect").innerHTML="";document.getElementById("tool-type-manual").style.display="block";document.getElementById("new-tool-type").innerHTML=Object.entries(CATEGORIES).map(([c,cfg])=>`<optgroup label="${cfg.icon} ${c}">`+cfg.types.map(t=>`<option value="${t}">${t}</option>`).join("")+`</optgroup>`).join("");}
+function openAddTool(){document.getElementById("new-tool-id").value="";document.getElementById("tool-type-detect").innerHTML="";document.getElementById("tool-type-manual").style.display="none";document.getElementById("tool-new-prefix").style.display="none";document.getElementById("new-tool-brand").value="";openModal("add-tool-modal");setTimeout(()=>document.getElementById("new-tool-id").focus(),100);}
+function addTool(){const raw=document.getElementById("new-tool-id").value.trim();if(!raw)return;const id=raw.replace(/\s+/g," ").toUpperCase(),prefix=getPrefix(id);let type="";if(document.getElementById("tool-new-prefix").style.display!=="none"){const c=document.getElementById("new-prefix-type-custom").value.trim();type=c||document.getElementById("new-prefix-type-select").value;prefixMap[prefix]=type;savePrefixes();}else if(document.getElementById("tool-type-manual").style.display!=="none"){const c=document.getElementById("new-tool-custom").value.trim();type=c||document.getElementById("new-tool-type").value;}else if(prefixMap[prefix])type=prefixMap[prefix];else type="Unknown";const brand=document.getElementById("new-tool-brand").value.trim();const existing=findIdOccurrences(id).filter(entry=>entry.crew!==activeCrew);data[activeCrew].tools.push(mk(id,type,brand));saveData();closeModal("add-tool-modal");render();toast(existing.length?`Added ${id}. It already exists in ${existing.map(entry=>data[entry.crew].label||entry.crew).join(', ')}.`:`Added: ${id} (${type})`,existing.length?'info':'success',existing.length?'Potential conflict':'Tool added');}
+function openAddCrew(){document.getElementById("new-crew-name").value="";openModal("add-crew-modal");setTimeout(()=>document.getElementById("new-crew-name").focus(),100);}
+function addCrew(){const n=document.getElementById("new-crew-name").value.trim();if(!n||data[n])return;data[n]={label:n,tools:[]};activeCrew=n;saveData();closeModal("add-crew-modal");render();toast("Crew created",'success','Saved');}
+function openDeleteCrew(k){crewToDelete=k;document.getElementById("delete-crew-name").textContent=data[k].label||k;openModal("delete-crew-modal");}
+function confirmDeleteCrew(){delete data[crewToDelete];const k=Object.keys(data);activeCrew=k[0]||"__overview__";saveData();cleanupSharedConflicts();closeModal("delete-crew-modal");render();toast("Crew deleted",'info','Removed');}
+function openRenameCrew(){document.getElementById("rename-crew-input").value=data[activeCrew].label||activeCrew;openModal("rename-crew-modal");setTimeout(()=>{const i=document.getElementById("rename-crew-input");i.focus();i.select();},100);}
+function renameCrew(){const n=document.getElementById("rename-crew-input").value.trim();if(!n)return;data[activeCrew].label=n;saveData();closeModal("rename-crew-modal");render();toast("Crew renamed",'success','Updated');}
+function openTransfer(i){transferToolIdx=i;const t=data[activeCrew].tools[i];document.getElementById("transfer-tool-id").textContent=t.id+" ("+t.type+")";document.getElementById("transfer-dest").innerHTML=Object.keys(data).filter(k=>k!==activeCrew).map(k=>`<option value="${k}">${data[k].label||k}</option>`).join("");openModal("transfer-modal");}
+function confirmTransfer(){const d=document.getElementById("transfer-dest").value;if(!d)return;const t=data[activeCrew].tools.splice(transferToolIdx,1)[0];data[d].tools.push(t);saveData();cleanupSharedConflicts();closeModal("transfer-modal");render();toast("Transferred to "+(data[d].label||d),'success','Transfer complete');}
+
+// ─── PRINT ──────────────────────────────────────────────────────────
+function openPrintModal(){document.getElementById("print-week-date").value=todayStr();printSelected=new Set(Object.keys(data));renderPrintCrewList();openModal("print-modal");}
+function renderPrintCrewList(){document.getElementById("print-crew-list").innerHTML=Object.keys(data).map(k=>{const s=printSelected.has(k)?" selected":"";return`<div class="print-crew-option${s}" onclick="togglePrintCrew('${k}')"><span style="font-size:18px">${printSelected.has(k)?'☑':'☐'}</span><span style="font-weight:600">${data[k].label||k}</span><span style="margin-left:auto;color:var(--fg2);font-size:12px">${data[k].tools.length} tools</span></div>`;}).join("");}
+function togglePrintCrew(k){if(printSelected.has(k))printSelected.delete(k);else printSelected.add(k);renderPrintCrewList();}
+
+function doPrint(){
+  const dv=document.getElementById("print-week-date").value,wl=new Date(dv+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const pf=document.getElementById("print-prefill").checked,area=document.getElementById("print-area");
+  const chk='<span class="print-chk"></span>';
+  area.innerHTML=[...printSelected].map(k=>{
+    const c=data[k],grouped=groupByCategory(c.tools);
+    const rows=grouped.map(([cat,items])=>{
+      return`<tr class="print-cat-row"><td colspan="8">${cat.toUpperCase()} (${items.length})</td></tr>`+items.map(t=>`<tr>
+        <td style="font-weight:700;font-family:'JetBrains Mono',monospace;font-size:9px">${esc(t.id)}</td>
+        <td style="font-size:9px">${esc(t.type)}${t.brand?'<br><span style="font-size:8px;color:#888">'+esc(t.brand)+'</span>':''}</td>
+        <td style="font-size:9px">${pf&&t.assignedTo?esc(t.assignedTo):''}</td>
+        <td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td></td>
+      </tr>`).join("");
+    }).join("")+Array(3).fill(`<tr><td></td><td style="font-size:8px;color:#aaa">________________</td><td></td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td></td></tr>`).join("");
+    return`<div class="print-page">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1.5px solid #1a1a1a;padding-bottom:3px;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:800">${esc(c.label||k)} — Weekly Tool Check</div>
+        <div style="font-size:10px;color:#555">Week of: ${wl}</div>
+      </div>
+      <table class="print-table"><thead><tr>
+        <th style="width:10%">Tool ID</th><th style="width:17%">Type / Brand</th><th style="width:14%">Assigned To</th>
+        <th style="width:8%;text-align:center">In Truck</th><th style="width:8%;text-align:center">Damaged</th><th style="width:8%;text-align:center">Repair</th><th style="width:8%;text-align:center">Missing</th><th style="width:27%">Notes</th>
+      </tr></thead><tbody>${rows}</tbody></table>
+      <div class="print-footer">
+        <div style="margin-bottom:4px">☐ = Check if applies</div>
+        <div class="print-sig"><div>Crew Lead: <span class="print-sig-line"></span></div><div>Date: <span class="print-sig-line" style="min-width:120px"></span></div></div>
+      </div>
+    </div>`;
+  }).join("");
+  closeModal("print-modal");setTimeout(()=>window.print(),200);
+}
+
+// ─── PREFIXES ───────────────────────────────────────────────────────
+function openPrefixModal(){renderPrefixList();openModal("prefix-modal");}
+function renderPrefixList(){const el=document.getElementById("prefix-list"),e=Object.entries(prefixMap).sort((a,b)=>a[0].localeCompare(b[0]));el.innerHTML=e.length===0?'<div style="color:var(--fg2);font-size:13px;padding:10px">No prefixes.</div>':`<table style="width:100%;border-collapse:collapse">${e.map(([c,t])=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;width:70px;color:var(--accent)">${esc(c)}</td><td style="padding:7px 10px;font-size:13px">${esc(t)}</td><td style="padding:7px 4px;width:30px;text-align:right"><button class="remove-btn" style="opacity:1" onclick="removePrefix('${esc(c)}')">✕</button></td></tr>`).join("")}</table>`;}
+function addPrefixManual(){const c=document.getElementById("add-prefix-code").value.trim().toUpperCase(),t=document.getElementById("add-prefix-type").value.trim();if(!c||!t)return;prefixMap[c]=t;savePrefixes();document.getElementById("add-prefix-code").value="";document.getElementById("add-prefix-type").value="";renderPrefixList();toast("Prefix added",'success','Saved');}
+function removePrefix(c){delete prefixMap[c];savePrefixes();renderPrefixList();}
+
+// ─── IMPORT / EXPORT ────────────────────────────────────────────────
+function exportData(){const b=new Blob([JSON.stringify({data,prefixMap},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="tool-tracker-"+todayStr()+".json";a.click();toast("Data exported",'info','Export complete');}
+function importData(){document.getElementById("import-file").click();}
+function handleImport(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){try{const p=JSON.parse(e.target.result);if(p.data){data=p.data;if(p.prefixMap)prefixMap=p.prefixMap;}else data=p;for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";}saveData();savePrefixes();activeCrew="__overview__";render();toast("Imported successfully",'success','Import complete');}catch{toast("Import failed: invalid file",'error','Import failed');}};r.readAsText(f);ev.target.value="";}
+
+// ─── THEME ──────────────────────────────────────────────────────────
+function toggleTheme(){
+  const btn=document.getElementById("theme-btn");
+  btn.classList.remove('theme-spin');
+  void btn.offsetWidth;
+  btn.classList.add('theme-spin');
+  const l=document.documentElement.classList.toggle("light");
+  localStorage.setItem("tool_tracker_theme",l?"light":"dark");
+  document.getElementById("theme-btn").textContent=l?"☀️":"🌙";
+  toast(l?"Light theme enabled":"Dark theme enabled",'info','Appearance');
+  setTimeout(()=>btn.classList.remove('theme-spin'),240);
+}
+function loadTheme(){if(localStorage.getItem("tool_tracker_theme")==="light"){document.documentElement.classList.add("light");document.getElementById("theme-btn").textContent="☀️";}}
+function toast(msg,type='success',title='Saved'){
+  const el=document.getElementById("toast");
+  const icon=type==='error'?'✕':type==='info'?'i':'✓';
+  el.dataset.type=type;
+  el.innerHTML=`<div class="toast-inner"><div class="toast-icon">${icon}</div><div class="toast-copy"><div class="toast-title">${title}</div><div class="toast-message">${esc(msg)}</div></div></div><div class="toast-progress"></div>`;
+  el.classList.remove("show");
+  void el.offsetWidth;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),2500);
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".overlay.open").forEach(m=>m.classList.remove("open"));});
+
+loadData();loadPrefixes();loadConflictPrefs();cleanupSharedConflicts();loadTheme();render();
+</script>
+</body>
+</html>
