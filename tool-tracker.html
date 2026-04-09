@@ -35,6 +35,12 @@ html.light .btn-accent { color: #fff; }
 html.light .chk { background: var(--bg2); }
 html.light .cat-row td { background: #e8e9ee; }
 html.light .cat-count { background: #d5d7e0; }
+html.light .ov-alert-banner   { background: rgba(208,64,64,0.07); }
+html.light .ov-success-state  { background: rgba(47,158,63,0.06); }
+html.light .cat-card           { background: var(--bg3); }
+html.light .cc-progress-track  { background: var(--bg3); }
+html.light .sc-compact-bar     { background: var(--bg3); }
+html.light .cat-health-bar     { background: var(--bg3); }
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -401,6 +407,91 @@ tr.conflict-row td.tool-id { color: var(--red) !important; }
 @keyframes pulse-dot { 0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(229,91,91,0.28)} 50%{opacity:0.35; box-shadow:0 0 0 6px rgba(229,91,91,0)} }
 
 .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+
+/* ── OVERVIEW v2: HERO ─────────────────────────────────────── */
+.overview-hero-primary { display: flex; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
+.overview-hero-secondary { display: flex; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+.summary-card.sc-primary { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 160px; padding: 18px 20px; border-left: 3px solid var(--border); transition: border-left-color 200ms var(--ease-premium), transform 160ms var(--ease-premium), box-shadow 180ms var(--ease-premium); }
+.summary-card.sc-primary:hover { border-left-color: var(--accent); }
+.summary-card.sc-primary[data-health="ok"]    { border-left-color: var(--green); }
+.summary-card.sc-primary[data-health="warn"]  { border-left-color: var(--orange); }
+.summary-card.sc-primary[data-health="alert"] { border-left-color: var(--red); }
+.sc-icon { font-size: 22px; margin-top: 2px; flex-shrink: 0; }
+.sc-body { flex: 1; min-width: 0; }
+.sc-sub { font-size: 11px; color: var(--fg2); margin-top: 4px; font-weight: 600; }
+.summary-card.sc-compact { flex: 1; min-width: 110px; cursor: default; }
+.summary-card.sc-compact-alert { cursor: pointer; border-color: rgba(229,91,91,0.35); }
+.summary-card.sc-compact-alert:hover { border-color: var(--red); }
+.sc-compact-num { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+.sc-compact-lbl { font-size: 10px; color: var(--fg2); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; margin-top: 3px; margin-bottom: 8px; }
+.sc-compact-bar { height: 4px; background: color-mix(in srgb, var(--bg3) 80%, transparent); border-radius: 999px; overflow: hidden; }
+.sc-bar-fill { height: 100%; border-radius: 999px; min-width: 2px; transition: width 400ms var(--ease-premium); }
+.sc-bar-red    { background: var(--red); }
+.sc-bar-blue   { background: var(--blue); }
+.sc-bar-orange { background: var(--orange); }
+
+/* ── OVERVIEW v2: ALERT BANNER ─────────────────────────────── */
+.ov-alert-banner { display: flex; align-items: center; gap: 14px; background: rgba(229,91,91,0.09); border: 1px solid rgba(229,91,91,0.38); border-left: 4px solid var(--red); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; animation: alertSlide 240ms var(--ease-snap); }
+@keyframes alertSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.oab-icon  { font-size: 22px; flex-shrink: 0; }
+.oab-body  { flex: 1; min-width: 0; }
+.oab-title { font-size: 14px; font-weight: 800; color: var(--red); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.oab-ids   { font-size: 12px; color: var(--fg2); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── OVERVIEW v2: SUCCESS STATE ─────────────────────────────── */
+.ov-success-state { display: flex; align-items: center; gap: 12px; padding: 13px 18px; background: rgba(94,194,105,0.07); border: 1px solid rgba(94,194,105,0.26); border-left: 3px solid var(--green); border-radius: var(--radius); margin-bottom: 20px; }
+.oss-icon  { font-size: 18px; color: var(--green); font-weight: 800; flex-shrink: 0; }
+.oss-title { font-size: 13px; font-weight: 800; color: var(--green); }
+.oss-sub   { font-size: 12px; color: var(--fg2); margin-top: 2px; }
+
+/* ── OVERVIEW v2: SECTION HEADERS ──────────────────────────── */
+.ov-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 6px; }
+.ov-sh-rule  { width: 3px; height: 16px; border-radius: 999px; background: var(--accent); flex-shrink: 0; }
+.ov-sh-label { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.1px; color: var(--fg); flex: 1; }
+.ov-sh-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: color-mix(in srgb, var(--bg3) 90%, transparent); border: 1px solid var(--border); padding: 2px 8px; border-radius: 999px; color: var(--fg2); font-weight: 700; }
+.ov-sh-cat    .ov-sh-rule { background: var(--blue); }
+.ov-sh-shared .ov-sh-rule { background: var(--fg2); opacity: 0.45; }
+
+/* ── OVERVIEW v2: CREW CARD v2 ─────────────────────────────── */
+.crew-card.cc-v2 { padding: 16px 18px; }
+.cc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.crew-card.cc-v2 .cc-name { font-size: 16px; font-weight: 800; margin-bottom: 0; flex: 1; min-width: 0; }
+.cc-status-badge { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
+.cc-badge-ok    { background: rgba(94,194,105,0.13);  color: var(--green);  border: 1px solid rgba(94,194,105,0.28);  }
+.cc-badge-warn  { background: rgba(232,155,58,0.13);  color: var(--orange); border: 1px solid rgba(232,155,58,0.28);  }
+.cc-badge-alert { background: rgba(229,91,91,0.13);   color: var(--red);    border: 1px solid rgba(229,91,91,0.28);   }
+.cc-progress-track { height: 5px; background: color-mix(in srgb, var(--bg3) 80%, transparent); border-radius: 999px; overflow: hidden; margin-bottom: 5px; }
+.cc-progress-fill  { height: 100%; background: linear-gradient(90deg, color-mix(in srgb, var(--green) 78%, white 22%), var(--green)); border-radius: 999px; transition: width 380ms var(--ease-premium); min-width: 3px; }
+.cc-progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--fg2); font-weight: 600; margin-bottom: 12px; }
+.cc-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.cc-pill { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.02em; }
+.cc-pill-green  { background: rgba(94,194,105,0.12);  color: var(--green);  }
+.cc-pill-red    { background: rgba(229,91,91,0.12);   color: var(--red);    }
+.cc-pill-blue   { background: rgba(91,158,229,0.12);  color: var(--blue);   }
+.cc-pill-orange { background: rgba(232,155,58,0.12);  color: var(--orange); }
+.cc-footer { display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; color: var(--fg2); font-weight: 600; }
+.cc-checkin-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cc-arrow { opacity: 0; transition: opacity 160ms var(--ease-premium), transform 160ms var(--ease-premium); }
+.crew-card:hover .cc-arrow { opacity: 0.7; transform: translateX(3px); }
+
+/* ── OVERVIEW v2: CATEGORY CARDS ───────────────────────────── */
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 13px; margin-bottom: 24px; }
+.cat-card { background: color-mix(in srgb, var(--bg3) 78%, var(--bg2) 22%); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; cursor: default; box-shadow: var(--shadow-soft); transition: border-color 200ms var(--ease-premium); }
+.cat-card-icon { font-size: 22px; margin-bottom: 5px; }
+.cat-card-name { font-size: 11px; font-weight: 800; color: var(--fg2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.cat-card-total { display: flex; align-items: baseline; gap: 5px; margin-bottom: 10px; }
+.cat-card-bignum { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); }
+.cat-card-unit { font-size: 11px; color: var(--fg2); font-weight: 700; text-transform: uppercase; }
+.cat-card-breakdown { display: flex; gap: 10px; margin-bottom: 10px; }
+.cat-breakdown-item { flex: 1; }
+.cbd-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; display: block; line-height: 1.2; }
+.cbd-lbl { font-size: 9px; color: var(--fg2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.cat-health-bar { height: 5px; border-radius: 999px; overflow: hidden; background: var(--bg); display: flex; }
+.chb-segment { height: 100%; transition: width 360ms var(--ease-premium); }
+.chb-ok   { background: var(--green); }
+.chb-dmg  { background: var(--red); }
+.chb-miss { background: var(--orange); }
+
 .crew-card {
   background: color-mix(in srgb, var(--bg2) 95%, transparent);
   border: 1px solid var(--border);
@@ -865,45 +956,100 @@ function finishCheckin(){const crew=data[activeCrew],today=todayStr();for(const[
 
 // ─── OVERVIEW ───────────────────────────────────────────────────────
 function renderOverview(el){
-  const keys=Object.keys(data),allT=keys.reduce((s,k)=>s+data[k].tools.length,0),allTruck=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.inTruck).length,0),allDmg=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.damaged).length,0),allRep=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.repair).length,0),allMiss=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.missing).length,0);
-  const allGroups=getConflictGroups({includeShared:true});
+  // ── aggregation ──
+  const keys=Object.keys(data);
+  const allT    =keys.reduce((s,k)=>s+data[k].tools.length,0);
+  const allTruck=keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.inTruck).length,0);
+  const allDmg  =keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.damaged).length,0);
+  const allRep  =keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.repair).length,0);
+  const allMiss =keys.reduce((s,k)=>s+data[k].tools.filter(t=>t.missing).length,0);
+  const allGroups   =getConflictGroups({includeShared:true});
   const activeGroups=Object.values(allGroups).filter(group=>!group.shared);
   const sharedGroups=Object.values(allGroups).filter(group=>group.shared);
-  const cc=activeGroups.length;
-  const cr=activeGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--red)">${esc(group.displayId)}</td><td>${group.typeMismatch?'<span class="conflict-badge critical">ID/type mismatch</span>':'<span class="conflict-badge">Duplicate ID</span>'}</td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-danger btn-sm" onclick="openConflictModal('${group.normId}')">Review</button></td></tr>`).join('');
+  const cc          =activeGroups.length;
+  const criticalCount=activeGroups.filter(group=>group.typeMismatch).length;
+
+  // ── fleet health ──
+  const healthPct=allT>0?Math.round(allTruck/allT*100):0;
+  const issues=allDmg+allRep+allMiss;
+  let healthLevel,healthIcon,healthValueClass,healthSubLabel;
+  if(cc>0||allMiss>0){
+    healthLevel='alert';healthIcon='⚠️';healthValueClass='val-dmg';
+    healthSubLabel=cc>0?cc+' conflict'+(cc!==1?'s':'')+' detected':allMiss+' tool'+(allMiss!==1?'s':'')+' missing';
+  }else if(issues>0){
+    healthLevel='warn';healthIcon='🔧';healthValueClass='val-miss';
+    healthSubLabel=issues+' item'+(issues!==1?'s':'')+' need attention';
+  }else{
+    healthLevel='ok';healthIcon='✓';healthValueClass='val-ok';
+    healthSubLabel='All tools accounted for';
+  }
+
+  // ── conflict table rows ──
+  const conflictRows=activeGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--red)">${esc(group.displayId)}</td><td>${group.typeMismatch?'<span class="conflict-badge critical">ID/type mismatch</span>':'<span class="conflict-badge">Duplicate ID</span>'}</td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-danger btn-sm" onclick="openConflictModal('${group.normId}')">Review</button></td></tr>`).join('');
+
+  // ── alert banner ──
+  const previewIds=activeGroups.slice(0,4).map(g=>esc(g.displayId)).join(' · ')+(activeGroups.length>4?' · …':'');
+  const alertBanner=cc>0?`<div class="ov-alert-banner"><div class="oab-icon">⚠️</div><div class="oab-body"><div class="oab-title">${cc} active conflict${cc!==1?'s':''} require attention${criticalCount>0?` <span class="conflict-badge critical">${criticalCount} critical</span>`:''}</div><div class="oab-ids">${previewIds}</div></div><button class="btn btn-danger btn-sm" onclick="openConflictModal()">Review All</button></div>`:'';
+
+  // ── success state ──
+  const successState=cc===0?`<div class="ov-success-state"><div class="oss-icon">✓</div><div><div class="oss-title">No active conflicts</div><div class="oss-sub">All tool IDs are unique across crews.</div></div></div>`:'';
+
+  // ── crew cards ──
+  const crewCards=keys.map(k=>{
+    const c=data[k],t=c.tools.length,truck=c.tools.filter(x=>x.inTruck).length,dmg=c.tools.filter(x=>x.damaged).length,rep=c.tools.filter(x=>x.repair).length,miss=c.tools.filter(x=>x.missing).length;
+    const ccon=activeGroups.filter(group=>group.entries.some(entry=>entry.crew===k)).length;
+    const lcs=c.tools.map(x=>x.lastChecked).filter(Boolean),oldest=lcs.length===t&&lcs.length>0?lcs.sort()[0]:null;
+    const clbl=oldest?'Last full check: '+oldest:(lcs.length>0?lcs.length+'/'+t+' checked':'Never checked');
+    const truckPct=t>0?Math.round(truck/t*100):0;
+    let statusClass,statusLabel;
+    if(ccon>0||miss>0){statusClass='cc-badge-alert';statusLabel='Needs Attention';}
+    else if(dmg>0||rep>0){statusClass='cc-badge-warn';statusLabel='Minor Issues';}
+    else{statusClass='cc-badge-ok';statusLabel='All Clear';}
+    const pills=[
+      dmg>0?`<span class="cc-pill cc-pill-red">✗ ${dmg} dmg</span>`:'',
+      rep>0?`<span class="cc-pill cc-pill-blue">🔧 ${rep} repair</span>`:'',
+      miss>0?`<span class="cc-pill cc-pill-orange">⚠ ${miss} missing</span>`:'',
+      ccon>0?`<span class="cc-pill cc-pill-red">⚠ ${ccon} conflict${ccon!==1?'s':''}</span>`:'',
+      (dmg===0&&rep===0&&miss===0&&ccon===0)?'<span class="cc-pill cc-pill-green">✓ All clear</span>':'',
+    ].join('');
+    return`<div class="crew-card cc-v2" onclick="selectCrew('${k}')"><div class="cc-header"><div class="cc-name">${esc(c.label||k)}${ccon>0?' <span class="conflict-dot"></span>':''}</div><span class="cc-status-badge ${statusClass}">${statusLabel}</span></div><div class="cc-progress-track"><div class="cc-progress-fill" style="width:${truckPct}%"></div></div><div class="cc-progress-label"><span>${truck}/${t} in truck</span><span>${truckPct}%</span></div><div class="cc-pills">${pills}</div><div class="cc-footer"><span>${oldest?'🕐':'⚪'}</span><span class="cc-checkin-text">${clbl}</span><span class="cc-arrow">→</span></div></div>`;
+  }).join('');
+
+  // ── category cards ──
+  const catCards=groupByCategory(keys.flatMap(k=>data[k].tools)).map(([cat,items])=>{
+    const cfg=CATEGORIES[cat]||{icon:'🔧'};
+    const inT=items.filter(t=>t.inTruck).length,d=items.filter(t=>t.damaged).length,m=items.filter(t=>t.missing).length,n=items.length;
+    return`<div class="cat-card"><div class="cat-card-icon">${cfg.icon}</div><div class="cat-card-name">${cat}</div><div class="cat-card-total"><span class="cat-card-bignum">${n}</span><span class="cat-card-unit">tools</span></div><div class="cat-card-breakdown"><div class="cat-breakdown-item"><span class="cbd-num val-ok">${inT}</span><span class="cbd-lbl">in truck</span></div><div class="cat-breakdown-item"><span class="cbd-num val-dmg">${d}</span><span class="cbd-lbl">damaged</span></div><div class="cat-breakdown-item"><span class="cbd-num val-miss">${m}</span><span class="cbd-lbl">missing</span></div></div><div class="cat-health-bar"><div class="chb-segment chb-ok" style="width:${n>0?inT/n*100:0}%"></div><div class="chb-segment chb-dmg" style="width:${n>0?d/n*100:0}%"></div><div class="chb-segment chb-miss" style="width:${n>0?m/n*100:0}%"></div></div></div>`;
+  }).join('');
+
+  // ── shared IDs section ──
+  const sharedSection=sharedGroups.length>0?`<div class="ov-section-header ov-sh-shared" style="margin-top:28px"><div class="ov-sh-rule"></div><span class="ov-sh-label">Shared / Intentional Duplicate IDs</span><span class="ov-sh-count">${sharedGroups.length}</span></div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Status</th><th>Found In</th><th></th></tr></thead><tbody>${sharedGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--blue)">${esc(group.displayId)}</td><td><span class="shared-badge">Intentional shared ID</span></td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-blue btn-sm" onclick="openConflictModal('${group.normId}','',true)">Review</button></td></tr>`).join('')}</tbody></table></div>`:'';
+
+  // ── conflict table section ──
+  const conflictTableSection=cc>0?`<div class="ov-section-header" style="margin-top:8px"><div class="ov-sh-rule" style="background:var(--red)"></div><span class="ov-sh-label" style="color:var(--red)">Active Conflicts</span><span class="ov-sh-count">${cc}</span></div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Issue</th><th>Found In</th><th></th></tr></thead><tbody>${conflictRows}</tbody></table></div>`:'';
+
+  // ── assemble ──
+  const catCount=groupByCategory(keys.flatMap(k=>data[k].tools)).length;
   el.innerHTML=`<div class="toolbar"><h2>📊 Fleet Overview</h2>${(cc||sharedGroups.length)?`<button class="btn btn-danger btn-sm" onclick="openConflictModal()">Review conflicts</button>`:''}</div>
-    <div class="overview-hero">
-      <div class="summary-card"><div class="label">Crews</div><div class="value val-total">${keys.length}</div></div>
-      <div class="summary-card"><div class="label">Tools</div><div class="value val-total">${allT}</div></div>
-      <div class="summary-card"><div class="label">In Truck</div><div class="value val-ok">${allTruck}</div></div>
-      <div class="summary-card"><div class="label">Damaged</div><div class="value val-dmg">${allDmg}</div></div>
-      <div class="summary-card"><div class="label">Repair</div><div class="value val-rep">${allRep}</div></div>
-      <div class="summary-card"><div class="label">Missing</div><div class="value val-miss">${allMiss}</div></div>
-      ${cc>0?`<div class="summary-card" style="border-color:var(--red)"><div class="label">Conflicts</div><div class="value val-dmg">${cc}</div></div>`:''}
-      ${sharedGroups.length>0?`<div class="summary-card" style="border-color:rgba(91,158,229,0.34)"><div class="label">Shared IDs</div><div class="value val-rep">${sharedGroups.length}</div></div>`:''}
+    ${alertBanner}
+    <div class="overview-hero-primary">
+      <div class="summary-card sc-primary"><div class="sc-icon">🚛</div><div class="sc-body"><div class="label">Total Fleet</div><div class="value val-total">${allT}</div><div class="sc-sub">${keys.length} crew${keys.length!==1?'s':''}</div></div></div>
+      <div class="summary-card sc-primary"><div class="sc-icon">✅</div><div class="sc-body"><div class="label">In Truck</div><div class="value val-ok">${allTruck}</div><div class="sc-sub">${healthPct}% of fleet</div></div></div>
+      <div class="summary-card sc-primary" data-health="${healthLevel}"><div class="sc-icon">${healthIcon}</div><div class="sc-body"><div class="label">Fleet Health</div><div class="value ${healthValueClass}">${healthPct}%</div><div class="sc-sub">${healthSubLabel}</div></div></div>
     </div>
-    <div class="section-title">Crews</div>
-    <div class="overview-grid">${keys.map(k=>{
-      const c=data[k],t=c.tools.length,truck=c.tools.filter(x=>x.inTruck).length,dmg=c.tools.filter(x=>x.damaged).length,rep=c.tools.filter(x=>x.repair).length,miss=c.tools.filter(x=>x.missing).length;
-      const ccon=activeGroups.filter(group=>group.entries.some(entry=>entry.crew===k)).length;
-      const lcs=c.tools.map(x=>x.lastChecked).filter(Boolean),oldest=lcs.length===t&&lcs.length>0?lcs.sort()[0]:null;
-      const clbl=oldest?'Last full check: '+oldest:(lcs.length>0?lcs.length+'/'+t+' checked':'Never checked');
-      return`<div class="crew-card" onclick="selectCrew('${k}')"><div class="cc-name">${esc(c.label||k)}${ccon>0?' <span class="conflict-dot"></span>':''}</div><div class="cc-stats">
-        <div class="cc-stat"><div class="num val-total">${t}</div><div class="lbl">Tools</div></div>
-        <div class="cc-stat"><div class="num val-ok">${truck}</div><div class="lbl">Truck</div></div>
-        <div class="cc-stat"><div class="num val-dmg">${dmg}</div><div class="lbl">Dmg</div></div>
-        <div class="cc-stat"><div class="num val-rep">${rep}</div><div class="lbl">Repair</div></div>
-        ${miss>0?`<div class="cc-stat"><div class="num val-miss">${miss}</div><div class="lbl">Missing</div></div>`:''}
-        ${ccon>0?`<div class="cc-stat"><div class="num val-dmg">${ccon}</div><div class="lbl">Conflicts</div></div>`:''}
-      </div><div style="margin-top:10px;font-size:11px;color:var(--fg2)">${clbl}</div></div>`;
-    }).join('')}</div>
-    ${cc>0?`<div class="section-title" style="color:var(--red)">⚠️ Tool Conflicts</div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Issue</th><th>Found In</th><th></th></tr></thead><tbody>${cr}</tbody></table></div>`:`<div style="text-align:center;padding:30px;color:var(--green);font-weight:600;font-size:14px">✓ No active conflicts</div>`}
-    ${sharedGroups.length>0?`<div class="section-title" style="margin-top:20px;color:var(--blue)">Shared / intentional duplicate IDs</div><div class="conflict-table-wrap"><table><thead><tr><th>Tool ID</th><th>Status</th><th>Found In</th><th></th></tr></thead><tbody>${sharedGroups.map(group=>`<tr><td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--blue)">${esc(group.displayId)}</td><td><span class="shared-badge">Intentional shared ID</span></td><td>${group.entries.map(entry=>'<span style="background:var(--bg3);padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;margin-right:4px">'+(data[entry.crew].label||entry.crew)+'</span>').join(' ')}</td><td class="conflict-table-action"><button class="btn btn-blue btn-sm" onclick="openConflictModal('${group.normId}','',true)">Review</button></td></tr>`).join('')}</tbody></table></div>`:''}
-    <div class="section-title" style="margin-top:24px">Inventory by Category</div>
-    <div class="overview-grid">${groupByCategory(keys.flatMap(k=>data[k].tools)).map(([cat,items])=>{
-      const cfg=CATEGORIES[cat]||{icon:"🔧"};
-      return`<div class="crew-card" style="cursor:default"><div class="cc-name">${cfg.icon} ${cat}</div><div class="cc-stats"><div class="cc-stat"><div class="num val-total">${items.length}</div><div class="lbl">Total</div></div><div class="cc-stat"><div class="num val-ok">${items.filter(t=>t.inTruck).length}</div><div class="lbl">Truck</div></div><div class="cc-stat"><div class="num val-dmg">${items.filter(t=>t.damaged).length}</div><div class="lbl">Dmg</div></div><div class="cc-stat"><div class="num val-miss">${items.filter(t=>t.missing).length}</div><div class="lbl">Missing</div></div></div></div>`;
-    }).join('')}</div>`;
+    <div class="overview-hero-secondary">
+      <div class="summary-card sc-compact"><div class="sc-compact-num val-dmg">${allDmg}</div><div class="sc-compact-lbl">Damaged</div><div class="sc-compact-bar"><div class="sc-bar-fill sc-bar-red" style="width:${allT>0?Math.min(allDmg/allT*100,100):0}%"></div></div></div>
+      <div class="summary-card sc-compact"><div class="sc-compact-num val-rep">${allRep}</div><div class="sc-compact-lbl">In Repair</div><div class="sc-compact-bar"><div class="sc-bar-fill sc-bar-blue" style="width:${allT>0?Math.min(allRep/allT*100,100):0}%"></div></div></div>
+      <div class="summary-card sc-compact"><div class="sc-compact-num val-miss">${allMiss}</div><div class="sc-compact-lbl">Missing</div><div class="sc-compact-bar"><div class="sc-bar-fill sc-bar-orange" style="width:${allT>0?Math.min(allMiss/allT*100,100):0}%"></div></div></div>
+      ${cc>0?`<div class="summary-card sc-compact sc-compact-alert" onclick="openConflictModal()" style="cursor:pointer"><div class="sc-compact-num val-dmg">${cc}</div><div class="sc-compact-lbl">Conflicts</div><div class="sc-compact-bar"><div class="sc-bar-fill sc-bar-red" style="width:100%"></div></div></div>`:''}
+    </div>
+    ${successState}
+    <div class="ov-section-header"><div class="ov-sh-rule"></div><span class="ov-sh-label">Crews</span><span class="ov-sh-count">${keys.length}</span></div>
+    <div class="overview-grid">${crewCards}</div>
+    ${conflictTableSection}
+    <div class="ov-section-header ov-sh-cat" style="margin-top:${cc>0?'28px':'8px'}"><div class="ov-sh-rule"></div><span class="ov-sh-label">Inventory by Category</span><span class="ov-sh-count">${catCount}</span></div>
+    <div class="cat-grid">${catCards}</div>
+    ${sharedSection}`;
   requestAnimationFrame(applyPendingEffects);
 }
 
