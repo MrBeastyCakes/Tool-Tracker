@@ -550,6 +550,38 @@ tr.conflict-row td.tool-id { color: var(--red) !important; }
 .btn-blue { background: rgba(91,158,229,0.14); color: var(--blue); border-color: rgba(91,158,229,0.26); }
 .btn-blue:hover { background: rgba(91,158,229,0.2); }
 .conflict-table-action { text-align:right; white-space:nowrap; }
+
+/* ── TOOL HISTORY BUTTON ─────────────────────────────────────── */
+.history-btn { border: none; background: transparent; color: var(--fg2); cursor: pointer; font-size: 12px; padding: 2px 5px; border-radius: 5px; opacity: 0; transition: opacity 140ms var(--ease-premium), background-color 140ms var(--ease-premium); margin-left: 5px; vertical-align: middle; line-height: 1; }
+tbody tr:hover .history-btn { opacity: 0.6; }
+.history-btn:hover { opacity: 1 !important; background: color-mix(in srgb, var(--bg3) 80%, transparent); }
+
+/* ── TOOL HISTORY MODAL ──────────────────────────────────────── */
+.tool-history-header { padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+.th-id   { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 20px; color: var(--accent); letter-spacing: -0.02em; margin-bottom: 4px; }
+.th-meta { font-size: 12px; color: var(--fg2); font-weight: 500; margin-bottom: 8px; }
+.th-status-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.th-status-pill { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.03em; }
+.th-sp-green  { background: rgba(94,194,105,0.13);  color: var(--green);  }
+.th-sp-red    { background: rgba(229,91,91,0.13);   color: var(--red);    }
+.th-sp-blue   { background: rgba(91,158,229,0.13);  color: var(--blue);   }
+.th-sp-orange { background: rgba(232,155,58,0.13);  color: var(--orange); }
+.th-sp-fg2    { background: color-mix(in srgb, var(--bg3) 80%, transparent); color: var(--fg2); }
+.ht-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--fg2); margin-bottom: 10px; }
+.history-timeline { display: flex; flex-direction: column; }
+.ht-entry { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.ht-entry:last-child { border-bottom: none; }
+.ht-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.ht-dot-green  { background: var(--green); }
+.ht-dot-red    { background: var(--red); }
+.ht-dot-blue   { background: var(--blue); }
+.ht-dot-orange { background: var(--orange); }
+.ht-dot-accent { background: var(--accent); }
+.ht-dot-fg2    { background: var(--fg2); opacity: 0.5; }
+.ht-body  { flex: 1; min-width: 0; }
+.ht-label { font-size: 13px; font-weight: 600; color: var(--fg); line-height: 1.3; }
+.ht-time  { font-size: 11px; color: var(--fg2); margin-top: 2px; }
+
 @media (max-width: 760px) {
   .conflict-actions-grid { grid-template-columns: 1fr; }
   .conflict-modal-head, .conflict-entry-top { flex-direction:column; }
@@ -700,6 +732,13 @@ tr.conflict-row td.tool-id { color: var(--red) !important; }
   <div class="modal-actions"><button class="btn" onclick="closeModal('transfer-modal')">Cancel</button><button class="btn btn-accent" onclick="confirmTransfer()">Transfer</button></div>
 </div></div>
 
+<!-- TOOL HISTORY -->
+<div class="overlay" id="tool-history-modal"><div class="modal" style="max-width:500px;max-height:80vh;display:flex;flex-direction:column">
+  <h3>Tool Journey</h3>
+  <div id="tool-history-content" style="flex:1;overflow-y:auto;min-height:0"></div>
+  <div class="modal-actions" style="flex-shrink:0"><button class="btn" onclick="closeModal('tool-history-modal')">Close</button></div>
+</div></div>
+
 
 <!-- CONFLICTS -->
 <div class="overlay" id="conflict-modal"><div class="modal" style="max-width:760px;width:min(760px,calc(100vw - 32px))">
@@ -732,7 +771,7 @@ const CATEGORIES = {
   "Grinders":{icon:"⚙️",types:["Angle Grinder","Corded Angle Grinder","Oscillating Tool"]},
   "Other":{icon:"🔧",types:["Leaf Blower"]},
 };
-function mk(id,type,brand){return{id,type,brand:brand||"",assignedTo:"",inTruck:true,damaged:false,repair:false,missing:false,notes:"",lastChecked:""};}
+function mk(id,type,brand){return{id,type,brand:brand||"",assignedTo:"",inTruck:true,damaged:false,repair:false,missing:false,notes:"",lastChecked:"",history:[]};}
 const INITIAL = {
   "Unit 51":{label:"Unit 51",tools:[mk("BC 015","Battery Charger"),mk("BA 045","Battery"),mk("BA 081","Battery"),mk("BA 059","Battery"),mk("BA 012","Battery"),mk("BA 070","Battery"),mk("BA 038","Battery"),mk("BA 020","Battery"),mk("BA 091","Battery"),mk("SS 027","Soffit Stapler"),mk("SS 025","Soffit Stapler"),mk("SS 019","Soffit Stapler"),mk("SS 003","Soffit Stapler"),mk("SS 001","Soffit Stapler"),mk("SS 014","Soffit Stapler"),mk("SS 021","Narrow Crown Stapler"),mk("CS 002","Circular Saw"),mk("CS 018","Circular Saw"),mk("OSC 06","Oscillating Tool"),mk("LB 006","Leaf Blower"),mk("DR 009","Hammer Drill"),mk("AG 007","Angle Grinder"),mk("AG ???","Corded Angle Grinder"),mk("JS 001","Jig Saw")]},
   "Unit 52":{label:"Unit 52",tools:[mk("BC 019","Battery Charger"),mk("BA 055","Battery"),mk("BA 024","Battery"),mk("BA 021","Battery"),mk("BA 062","Battery"),mk("BA 004","Battery"),mk("SS 002","Soffit Stapler"),mk("SS 023","Soffit Stapler"),mk("SS 011","Soffit Stapler"),mk("SS 018","Soffit Stapler"),mk("CS 001","Circular Saw"),mk("CS 009","Circular Saw"),mk("CC 005",'Circular Saw 4.5"'),mk("ID 060","Impact Drill"),mk("ID 056","Impact Drill"),mk("ID 034","Impact Drill"),mk("ID ???","Impact Drill"),mk("DR 005","Speed Drill"),mk("RS 009","Reciprocating Saw"),mk("LB 005","Leaf Blower"),mk("OSC 06","Oscillating Tool")]},
@@ -747,7 +786,7 @@ function getCat(t){for(const[c,cfg]of Object.entries(CATEGORIES))if(cfg.types.in
 function groupByCategory(tools){const g={},o=Object.keys(CATEGORIES),r=[];for(const t of tools){const c=getCat(t.type);if(!g[c])g[c]=[];g[c].push(t);}for(const c of o)if(g[c])r.push([c,g[c]]);for(const[c,i]of Object.entries(g))if(!o.includes(c))r.push([c,i]);return r;}
 
 const SK="tool_tracker_v1";
-function loadData(){try{const s=localStorage.getItem(SK);if(s)data=JSON.parse(s);else data=JSON.parse(JSON.stringify(INITIAL));}catch{data=JSON.parse(JSON.stringify(INITIAL));}for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";}if(activeCrew!=="__overview__"&&!data[activeCrew]){const k=Object.keys(data);activeCrew=k[0]||"__overview__";}}
+function loadData(){try{const s=localStorage.getItem(SK);if(s)data=JSON.parse(s);else data=JSON.parse(JSON.stringify(INITIAL));}catch{data=JSON.parse(JSON.stringify(INITIAL));}for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";if(!t.history)t.history=[];}if(activeCrew!=="__overview__"&&!data[activeCrew]){const k=Object.keys(data);activeCrew=k[0]||"__overview__";}}
 function saveData(){try{localStorage.setItem(SK,JSON.stringify(data));}catch{}}
 function loadPrefixes(){try{const s=localStorage.getItem("tool_tracker_prefixes");prefixMap=s?JSON.parse(s):{...DEFAULT_PREFIXES};}catch{prefixMap={...DEFAULT_PREFIXES};}}
 function savePrefixes(){try{localStorage.setItem("tool_tracker_prefixes",JSON.stringify(prefixMap));}catch{}}
@@ -757,6 +796,8 @@ function saveConflictPrefs(){try{localStorage.setItem("tool_tracker_shared_confl
 function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function normalizeId(id){return(id||"").trim().replace(/\s+/g," ").toUpperCase();}
 function todayStr(){return new Date().toISOString().slice(0,10);}
+function pushHistory(tool,entry){if(!tool.history)tool.history=[];tool.history.push({ts:new Date().toISOString(),...entry});}
+function fmtTs(ts){try{const d=new Date(ts);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}catch{return ts;}}
 function findIdOccurrences(id){
   const norm=normalizeId(id), entries=[];
   for(const [crewKey,crew] of Object.entries(data)){
@@ -908,7 +949,7 @@ function renderMain(){
           const ri=crew.tools.indexOf(t), normId=normalizeId(t.id), activeConflict=conflictNorm[normId], conflictGroup=activeConflict?conflicts[activeConflict]:null, anyConflictGroup=allCrewConflictGroups[normId], isCon=!!conflictGroup, isShared=!!(anyConflictGroup&&anyConflictGroup.shared);
           const lc=t.lastChecked?`<span class="last-checked">${t.lastChecked}</span>`:`<span class="last-checked" style="color:var(--orange)">Never</span>`;
           return`<tr data-tool-id="${normId}"${isCon?' class="conflict-row"':''}>
-            <td class="tool-id">${esc(t.id)}${isCon?'<span class="conflict-dot" title="Conflict in '+conflictGroup.entries.filter(entry=>entry.crew!==activeCrew).map(entry=>data[entry.crew].label||entry.crew).join(', ')+'"></span>':''}${isShared?'<span class="shared-badge" style="margin-left:8px;padding:2px 7px;font-size:10px">Shared</span>':''}${(isCon||isShared)?`<button class="conflict-link" onclick="event.stopPropagation();openConflictModal('${normId}','${activeCrew}',${isShared&&!isCon?'true':'false'})">${isCon?'Resolve':'Review'}</button>`:''}</td>
+            <td class="tool-id">${esc(t.id)}${isCon?'<span class="conflict-dot" title="Conflict in '+conflictGroup.entries.filter(entry=>entry.crew!==activeCrew).map(entry=>data[entry.crew].label||entry.crew).join(', ')+'"></span>':''}${isShared?'<span class="shared-badge" style="margin-left:8px;padding:2px 7px;font-size:10px">Shared</span>':''}${(isCon||isShared)?`<button class="conflict-link" onclick="event.stopPropagation();openConflictModal('${normId}','${activeCrew}',${isShared&&!isCon?'true':'false'})">${isCon?'Resolve':'Review'}</button>`:''}<button class="history-btn" onclick="event.stopPropagation();openToolHistory('${activeCrew}',${ri})" title="View tool journey">🕐</button></td>
             <td>${esc(t.type)}</td><td><span class="brand-text">${esc(t.brand||'—')}</span></td>
             <td class="editable-cell"><input type="text" value="${esc(t.assignedTo)}" placeholder="—" onfocus="setCellEditing(this,true)" onblur="setCellEditing(this,false)" onchange="updateField('${activeCrew}',${ri},'assignedTo',this.value,this)"></td>
             <td><div class="chk${t.inTruck?' on':''}" data-field="inTruck" onclick="toggleField('${activeCrew}',${ri},'inTruck',this)">${t.inTruck?'✓':''}</div></td>
@@ -952,7 +993,7 @@ function renderCheckin(el,crew){
 }
 function setCheckin(i,s){checkinState[i]=checkinState[i]===s?null:s;renderMain();}
 function cancelCheckin(){checkinMode=false;renderMain();}
-function finishCheckin(){const crew=data[activeCrew],today=todayStr();for(const[i,s]of Object.entries(checkinState)){if(!s)continue;const t=crew.tools[parseInt(i)];t.inTruck=s==='ok';t.damaged=s==='damaged';t.repair=s==='repair';t.missing=s==='missing';t.lastChecked=today;}checkinMode=false;saveData();render();toast("Weekly check-in saved for "+crew.tools.length+" tools",'success','Check-in complete');}
+function finishCheckin(){const crew=data[activeCrew],today=todayStr();for(const[i,s]of Object.entries(checkinState)){if(!s)continue;const t=crew.tools[parseInt(i)];t.inTruck=s==='ok';t.damaged=s==='damaged';t.repair=s==='repair';t.missing=s==='missing';t.lastChecked=today;pushHistory(t,{event:'checkin',status:s,crew:activeCrew});}checkinMode=false;saveData();render();toast("Weekly check-in saved for "+crew.tools.length+" tools",'success','Check-in complete');}
 
 // ─── OVERVIEW ───────────────────────────────────────────────────────
 function renderOverview(el){
@@ -1057,8 +1098,8 @@ function renderOverview(el){
 function selectCrew(k){activeCrew=k;searchTerm="";checkinMode=false;render();}
 function onSearch(v){searchTerm=v.toLowerCase();renderMain();}
 function toggleCat(cr,cat){collapsedCats[cr+"__"+cat]=!collapsedCats[cr+"__"+cat];renderMain();}
-function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
-function updateField(cr,i,f,v,input){data[cr].tools[i][f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
+function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
+function updateField(cr,i,f,v,input){const tool=data[cr].tools[i];if(f==='assignedTo'&&tool.assignedTo!==v)pushHistory(tool,{event:'assigned',from:tool.assignedTo,to:v,crew:cr});tool[f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
 function removeTool(cr,i){data[cr].tools.splice(i,1);saveData();cleanupSharedConflicts();render();toast("Tool removed",'info','Inventory updated');}
 function openModal(id){document.getElementById(id).classList.add("open");}
 function closeModal(id){document.getElementById(id).classList.remove("open");}
@@ -1076,7 +1117,7 @@ function removeConflictSelected(sharedOnly=false){const group=getConflictGroups(
 function onToolIdInput(){const id=document.getElementById("new-tool-id").value.trim(),prefix=getPrefix(id);const det=document.getElementById("tool-type-detect"),man=document.getElementById("tool-type-manual"),np=document.getElementById("tool-new-prefix");if(!prefix){det.innerHTML="";man.style.display="none";np.style.display="none";return;}if(prefixMap[prefix]){det.innerHTML=`<div style="background:rgba(94,194,105,0.1);border:1px solid var(--green);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><span>✓</span><span style="font-size:13px"><strong style="font-family:'JetBrains Mono',monospace">${esc(prefix)}</strong> → <strong>${esc(prefixMap[prefix])}</strong></span><button class="btn btn-sm" style="margin-left:auto;font-size:11px" onclick="overridePrefix()">Change</button></div>`;man.style.display="none";np.style.display="none";}else{det.innerHTML="";man.style.display="none";np.style.display="block";document.getElementById("new-prefix-label").textContent=prefix;document.getElementById("new-prefix-type-select").innerHTML=Object.entries(CATEGORIES).map(([c,cfg])=>`<optgroup label="${cfg.icon} ${c}">`+cfg.types.map(t=>`<option value="${t}">${t}</option>`).join("")+`</optgroup>`).join("");}}
 function overridePrefix(){document.getElementById("tool-type-detect").innerHTML="";document.getElementById("tool-type-manual").style.display="block";document.getElementById("new-tool-type").innerHTML=Object.entries(CATEGORIES).map(([c,cfg])=>`<optgroup label="${cfg.icon} ${c}">`+cfg.types.map(t=>`<option value="${t}">${t}</option>`).join("")+`</optgroup>`).join("");}
 function openAddTool(){document.getElementById("new-tool-id").value="";document.getElementById("tool-type-detect").innerHTML="";document.getElementById("tool-type-manual").style.display="none";document.getElementById("tool-new-prefix").style.display="none";document.getElementById("new-tool-brand").value="";openModal("add-tool-modal");setTimeout(()=>document.getElementById("new-tool-id").focus(),100);}
-function addTool(){const raw=document.getElementById("new-tool-id").value.trim();if(!raw)return;const id=raw.replace(/\s+/g," ").toUpperCase(),prefix=getPrefix(id);let type="";if(document.getElementById("tool-new-prefix").style.display!=="none"){const c=document.getElementById("new-prefix-type-custom").value.trim();type=c||document.getElementById("new-prefix-type-select").value;prefixMap[prefix]=type;savePrefixes();}else if(document.getElementById("tool-type-manual").style.display!=="none"){const c=document.getElementById("new-tool-custom").value.trim();type=c||document.getElementById("new-tool-type").value;}else if(prefixMap[prefix])type=prefixMap[prefix];else type="Unknown";const brand=document.getElementById("new-tool-brand").value.trim();const existing=findIdOccurrences(id).filter(entry=>entry.crew!==activeCrew);data[activeCrew].tools.push(mk(id,type,brand));saveData();closeModal("add-tool-modal");render();toast(existing.length?`Added ${id}. It already exists in ${existing.map(entry=>data[entry.crew].label||entry.crew).join(', ')}.`:`Added: ${id} (${type})`,existing.length?'info':'success',existing.length?'Potential conflict':'Tool added');}
+function addTool(){const raw=document.getElementById("new-tool-id").value.trim();if(!raw)return;const id=raw.replace(/\s+/g," ").toUpperCase(),prefix=getPrefix(id);let type="";if(document.getElementById("tool-new-prefix").style.display!=="none"){const c=document.getElementById("new-prefix-type-custom").value.trim();type=c||document.getElementById("new-prefix-type-select").value;prefixMap[prefix]=type;savePrefixes();}else if(document.getElementById("tool-type-manual").style.display!=="none"){const c=document.getElementById("new-tool-custom").value.trim();type=c||document.getElementById("new-tool-type").value;}else if(prefixMap[prefix])type=prefixMap[prefix];else type="Unknown";const brand=document.getElementById("new-tool-brand").value.trim();const existing=findIdOccurrences(id).filter(entry=>entry.crew!==activeCrew);const newTool=mk(id,type,brand);pushHistory(newTool,{event:'created',crew:activeCrew});data[activeCrew].tools.push(newTool);saveData();closeModal("add-tool-modal");render();toast(existing.length?`Added ${id}. It already exists in ${existing.map(entry=>data[entry.crew].label||entry.crew).join(', ')}.`:`Added: ${id} (${type})`,existing.length?'info':'success',existing.length?'Potential conflict':'Tool added');}
 function openAddCrew(){document.getElementById("new-crew-name").value="";openModal("add-crew-modal");setTimeout(()=>document.getElementById("new-crew-name").focus(),100);}
 function addCrew(){const n=document.getElementById("new-crew-name").value.trim();if(!n||data[n])return;data[n]={label:n,tools:[]};activeCrew=n;saveData();closeModal("add-crew-modal");render();toast("Crew created",'success','Saved');}
 function openDeleteCrew(k){crewToDelete=k;document.getElementById("delete-crew-name").textContent=data[k].label||k;openModal("delete-crew-modal");}
@@ -1084,7 +1125,55 @@ function confirmDeleteCrew(){delete data[crewToDelete];const k=Object.keys(data)
 function openRenameCrew(){document.getElementById("rename-crew-input").value=data[activeCrew].label||activeCrew;openModal("rename-crew-modal");setTimeout(()=>{const i=document.getElementById("rename-crew-input");i.focus();i.select();},100);}
 function renameCrew(){const n=document.getElementById("rename-crew-input").value.trim();if(!n)return;data[activeCrew].label=n;saveData();closeModal("rename-crew-modal");render();toast("Crew renamed",'success','Updated');}
 function openTransfer(i){transferToolIdx=i;const t=data[activeCrew].tools[i];document.getElementById("transfer-tool-id").textContent=t.id+" ("+t.type+")";document.getElementById("transfer-dest").innerHTML=Object.keys(data).filter(k=>k!==activeCrew).map(k=>`<option value="${k}">${data[k].label||k}</option>`).join("");openModal("transfer-modal");}
-function confirmTransfer(){const d=document.getElementById("transfer-dest").value;if(!d)return;const t=data[activeCrew].tools.splice(transferToolIdx,1)[0];data[d].tools.push(t);saveData();cleanupSharedConflicts();closeModal("transfer-modal");render();toast("Transferred to "+(data[d].label||d),'success','Transfer complete');}
+function confirmTransfer(){const d=document.getElementById("transfer-dest").value;if(!d)return;const t=data[activeCrew].tools.splice(transferToolIdx,1)[0];pushHistory(t,{event:'transferred',from:activeCrew,to:d});data[d].tools.push(t);saveData();cleanupSharedConflicts();closeModal("transfer-modal");render();toast("Transferred to "+(data[d].label||d),'success','Transfer complete');}
+
+// ─── TOOL HISTORY ───────────────────────────────────────────────────
+function openToolHistory(cr,i){
+  const tool=data[cr].tools[i];
+  const history=[...(tool.history||[])].reverse();
+  const statusPills=[
+    tool.inTruck?'<span class="th-status-pill th-sp-green">✓ In Truck</span>':'',
+    tool.damaged?'<span class="th-status-pill th-sp-red">✗ Damaged</span>':'',
+    tool.repair?'<span class="th-status-pill th-sp-blue">🔧 Repair</span>':'',
+    tool.missing?'<span class="th-status-pill th-sp-orange">⚠ Missing</span>':'',
+  ].filter(Boolean).join('')||'<span class="th-status-pill th-sp-fg2">No status</span>';
+  const crewLabel=data[cr]?.label||cr;
+  const timelineHtml=history.length===0
+    ?'<div style="text-align:center;padding:32px 0;color:var(--fg2);font-size:13px">No history recorded yet.<br><span style="font-size:11px;opacity:0.7">Events will appear here as you update this tool.</span></div>'
+    :history.map(e=>{
+      let dot,label;
+      if(e.event==='created'){
+        dot='ht-dot-green';label='Added to '+(data[e.crew]?.label||e.crew||'fleet');
+      }else if(e.event==='status'){
+        if(e.field==='missing'){dot=e.value?'ht-dot-orange':'ht-dot-green';label=e.value?'Marked missing':'Found — no longer missing';}
+        else if(e.field==='inTruck'){dot=e.value?'ht-dot-green':'ht-dot-fg2';label=e.value?'Checked back into truck':'Removed from truck';}
+        else if(e.field==='damaged'){dot=e.value?'ht-dot-red':'ht-dot-fg2';label=e.value?'Marked damaged':'Damage cleared';}
+        else if(e.field==='repair'){dot=e.value?'ht-dot-blue':'ht-dot-fg2';label=e.value?'Sent for repair':'Returned from repair';}
+        else{dot='ht-dot-fg2';label=e.field+' → '+(e.value?'on':'off');}
+      }else if(e.event==='checkin'){
+        const sl={ok:'In Truck',damaged:'Damaged',repair:'Repair',missing:'Missing'};
+        const dc={ok:'ht-dot-green',damaged:'ht-dot-red',repair:'ht-dot-blue',missing:'ht-dot-orange'};
+        dot=dc[e.status]||'ht-dot-fg2';label='Weekly check-in: '+(sl[e.status]||e.status);
+      }else if(e.event==='transferred'){
+        dot='ht-dot-accent';
+        const f=data[e.from]?.label||e.from||'?',t=data[e.to]?.label||e.to||'?';
+        label='Transferred: '+f+' → '+t;
+      }else if(e.event==='assigned'){
+        dot='ht-dot-fg2';
+        label=e.to?'Assigned to '+e.to:(e.from?'Unassigned from '+e.from:'Assignment cleared');
+      }else{dot='ht-dot-fg2';label=e.event;}
+      return`<div class="ht-entry"><div class="ht-dot ${dot}"></div><div class="ht-body"><div class="ht-label">${esc(label)}</div><div class="ht-time">${fmtTs(e.ts)}</div></div></div>`;
+    }).join('');
+  document.getElementById('tool-history-content').innerHTML=`
+    <div class="tool-history-header">
+      <div class="th-id">${esc(tool.id)}</div>
+      <div class="th-meta">${esc(tool.type)}${tool.brand?' · '+esc(tool.brand):''}${tool.assignedTo?' · Assigned to '+esc(tool.assignedTo):''} · ${esc(crewLabel)}</div>
+      <div class="th-status-row">${statusPills}</div>
+    </div>
+    <div class="ht-section-label">History · ${history.length} event${history.length!==1?'s':''}</div>
+    <div class="history-timeline">${timelineHtml}</div>`;
+  openModal('tool-history-modal');
+}
 
 // ─── PRINT ──────────────────────────────────────────────────────────
 function openPrintModal(){document.getElementById("print-week-date").value=todayStr();printSelected=new Set(Object.keys(data));renderPrintCrewList();openModal("print-modal");}
@@ -1132,7 +1221,7 @@ function removePrefix(c){delete prefixMap[c];savePrefixes();renderPrefixList();}
 // ─── IMPORT / EXPORT ────────────────────────────────────────────────
 function exportData(){const b=new Blob([JSON.stringify({data,prefixMap},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="tool-tracker-"+todayStr()+".json";a.click();toast("Data exported",'info','Export complete');}
 function importData(){document.getElementById("import-file").click();}
-function handleImport(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){try{const p=JSON.parse(e.target.result);if(p.data){data=p.data;if(p.prefixMap)prefixMap=p.prefixMap;}else data=p;for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";}saveData();savePrefixes();activeCrew="__overview__";render();toast("Imported successfully",'success','Import complete');}catch{toast("Import failed: invalid file",'error','Import failed');}};r.readAsText(f);ev.target.value="";}
+function handleImport(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){try{const p=JSON.parse(e.target.result);if(p.data){data=p.data;if(p.prefixMap)prefixMap=p.prefixMap;}else data=p;for(const c of Object.values(data))for(const t of c.tools){if(t.missing===undefined)t.missing=false;if(!t.brand)t.brand="";if(!t.lastChecked)t.lastChecked="";if(!t.history)t.history=[];}saveData();savePrefixes();activeCrew="__overview__";render();toast("Imported successfully",'success','Import complete');}catch{toast("Import failed: invalid file",'error','Import failed');}};r.readAsText(f);ev.target.value="";}
 
 // ─── THEME ──────────────────────────────────────────────────────────
 function toggleTheme(){
