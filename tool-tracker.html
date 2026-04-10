@@ -1098,7 +1098,7 @@ function renderOverview(el){
 function selectCrew(k){activeCrew=k;searchTerm="";checkinMode=false;render();}
 function onSearch(v){searchTerm=v.toLowerCase();renderMain();}
 function toggleCat(cr,cat){collapsedCats[cr+"__"+cat]=!collapsedCats[cr+"__"+cat];renderMain();}
-function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
+function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});if(f==='missing'&&tool.missing&&tool.inTruck){tool.inTruck=false;pushHistory(tool,{event:'status',field:'inTruck',value:false,crew:cr});}else if(f==='inTruck'&&tool.inTruck&&tool.missing){tool.missing=false;pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});}saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
 function updateField(cr,i,f,v,input){const tool=data[cr].tools[i];if(f==='assignedTo'&&tool.assignedTo!==v)pushHistory(tool,{event:'assigned',from:tool.assignedTo,to:v,crew:cr});tool[f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
 function removeTool(cr,i){data[cr].tools.splice(i,1);saveData();cleanupSharedConflicts();render();toast("Tool removed",'info','Inventory updated');}
 function openModal(id){document.getElementById(id).classList.add("open");}
