@@ -691,7 +691,7 @@ tbody tr:hover .history-btn { opacity: 0.6; }
 
 /* ── MISSING HUB: INLINE RESOLVE PANEL ─────────────────────── */
 .miss-resolve-panel { margin-top:0; padding-top:0; border-top:1px solid transparent; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-height:0; opacity:0; overflow:hidden; transition:max-height 260ms var(--ease-premium),opacity 220ms var(--ease-premium),margin-top 220ms var(--ease-premium),padding-top 220ms var(--ease-premium),border-color 220ms var(--ease-premium); }
-.miss-resolve-panel.open { max-height:80px; opacity:1; margin-top:12px; padding-top:12px; border-top-color:var(--border); }
+.miss-resolve-panel.open { max-height:140px; opacity:1; margin-top:12px; padding-top:12px; border-top-color:var(--border); }
 .miss-resolve-btn { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; padding:9px 10px; border-radius:9px; border:1px solid var(--border); background:color-mix(in srgb,var(--bg3) 92%,transparent); color:var(--fg); cursor:pointer; text-align:center; transition:transform 130ms var(--ease-premium),border-color 130ms var(--ease-premium),background-color 130ms var(--ease-premium),box-shadow 130ms var(--ease-premium),color 130ms var(--ease-premium); }
 .miss-resolve-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-soft); }
 .miss-resolve-btn:active { transform:scale(0.97); }
@@ -701,6 +701,11 @@ tbody tr:hover .history-btn { opacity: 0.6; }
 .miss-resolve-btn.rb-damage:hover { background:rgba(229,91,91,0.10); border-color:var(--red); }
 .miss-resolve-btn.rb-repair { border-color:rgba(91,158,229,0.30);  color:var(--blue); }
 .miss-resolve-btn.rb-repair:hover { background:rgba(91,158,229,0.10); border-color:var(--blue); }
+.miss-crew-row { grid-column:1/-1; display:flex; align-items:center; gap:8px; }
+.miss-crew-row-label { font-size:11px; font-weight:700; color:var(--fg2); text-transform:uppercase; letter-spacing:0.06em; white-space:nowrap; }
+.miss-crew-select { flex:1; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; padding:7px 10px; border-radius:9px; border:1px solid var(--border); background:color-mix(in srgb,var(--bg3) 92%,transparent); color:var(--fg); cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:28px; }
+.miss-crew-select:focus { outline:none; border-color:var(--accent); }
+html.light .miss-crew-select { background-color:var(--bg2); }
 
 /* ── MISSING HUB: CARD EXIT ─────────────────────────────────── */
 @keyframes cardExit { 0%{opacity:1;transform:translateX(0) scale(1);max-height:220px;margin-bottom:10px;padding:16px 18px} 60%{opacity:0;transform:translateX(40px) scale(0.97)} 100%{opacity:0;transform:translateX(50px) scale(0.97);max-height:0;margin-bottom:0;padding:0} }
@@ -1207,6 +1212,10 @@ function renderMissing(el){
     const cardsHtml=items.map(({tool,idx})=>{
       const ck=missCardKey(crewKey,idx);
       const since=timeSinceMissing(tool);
+      const multiCrew=keys.length>1;
+      const crewOpts=keys.map(k=>`<option value="${k}"${k===crewKey?' selected':''}>${esc(data[k].label||k)}</option>`).join('');
+      const crewPickerRow=multiCrew?`<div class="miss-crew-row"><span class="miss-crew-row-label">Truck belongs to:</span><select id="mrc_${ck}" class="miss-crew-select">${crewOpts}</select></div>`:'';
+      const truckClick=multiCrew?`resolveMissing('${esc(crewKey)}',${idx},'inTruck',document.getElementById('mrc_${ck}').value)`:`resolveMissing('${esc(crewKey)}',${idx},'inTruck')`;
       return`<div class="miss-card" data-miss-id="${ck}">
         <div class="miss-card-top">
           <div>
@@ -1219,9 +1228,10 @@ function renderMissing(el){
           <button class="miss-find-btn" onclick="toggleResolvePanel(this,'${esc(crewKey)}',${idx})">Mark Found ▾</button>
         </div>
         <div class="miss-resolve-panel" id="mrp_${ck}">
-          <button class="miss-resolve-btn rb-truck"  onclick="resolveMissing('${esc(crewKey)}',${idx},'inTruck')">✓ Back in Truck</button>
+          <button class="miss-resolve-btn rb-truck"  onclick="${truckClick}">✓ Back in Truck</button>
           <button class="miss-resolve-btn rb-damage" onclick="resolveMissing('${esc(crewKey)}',${idx},'damaged')">✗ Mark Damaged</button>
           <button class="miss-resolve-btn rb-repair" onclick="resolveMissing('${esc(crewKey)}',${idx},'repair')">🔧 Send to Repair</button>
+          ${crewPickerRow}
         </div>
       </div>`;
     }).join('');
@@ -1241,12 +1251,31 @@ function toggleResolvePanel(btn,cr,i){
   });
   if(!isOpen){panel.classList.add('open');btn.classList.add('expanded');btn.textContent='Cancel ▴';}
 }
-function resolveMissing(cr,i,newStatus){
+function resolveMissing(cr,i,newStatus,targetCrew){
   const tool=data[cr]?.tools[i];
   if(!tool||!tool.missing)return;
+  targetCrew=targetCrew||cr;
   tool.missing=false;
   pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});
-  if(newStatus==='inTruck'){tool.inTruck=true;pushHistory(tool,{event:'status',field:'inTruck',value:true,crew:cr});}
+  if(newStatus==='inTruck'){
+    tool.inTruck=true;
+    pushHistory(tool,{event:'status',field:'inTruck',value:true,crew:targetCrew});
+    if(targetCrew!==cr&&data[targetCrew]){
+      const spliced=data[cr].tools.splice(i,1)[0];
+      pushHistory(spliced,{event:'transferred',from:cr,to:targetCrew});
+      data[targetCrew].tools.push(spliced);
+      saveData();
+      cleanupSharedConflicts();
+      const badge=document.querySelector('.miss-count-badge');
+      if(badge){const prev=parseInt(badge.textContent,10)||0;if(prev>1)badge.textContent=String(prev-1);else badge.remove();}
+      const allMissNow=Object.values(data).reduce((s,c)=>s+c.tools.filter(t=>t.missing).length,0);
+      if(allMissNow===0)document.querySelectorAll('.miss-dot').forEach(d=>d.remove());
+      queueEffect({type:'resolve',missId:missCardKey(cr,i)});
+      requestAnimationFrame(applyPendingEffects);
+      toast(`Transferred to ${esc(data[targetCrew].label||targetCrew)}`,'success','Transfer complete');
+      return;
+    }
+  }
   else if(newStatus==='damaged'){tool.damaged=true;pushHistory(tool,{event:'status',field:'damaged',value:true,crew:cr});}
   else if(newStatus==='repair'){tool.repair=true;pushHistory(tool,{event:'status',field:'repair',value:true,crew:cr});}
   saveData();
@@ -1262,7 +1291,44 @@ function resolveMissing(cr,i,newStatus){
 function selectCrew(k){activeCrew=k;searchTerm="";checkinMode=false;render();}
 function onSearch(v){searchTerm=v.toLowerCase();renderMain();}
 function toggleCat(cr,cat){collapsedCats[cr+"__"+cat]=!collapsedCats[cr+"__"+cat];renderMain();}
-function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});if(f==='missing'&&tool.missing&&tool.inTruck){tool.inTruck=false;pushHistory(tool,{event:'status',field:'inTruck',value:false,crew:cr});}else if(f==='inTruck'&&tool.inTruck&&tool.missing){tool.missing=false;pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});}saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
+function toggleField(cr,i,f){
+  const tool=data[cr].tools[i];
+  tool[f]=!tool[f];
+  pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});
+  if(f==='missing'&&tool.missing&&tool.inTruck){
+    tool.inTruck=false;
+    pushHistory(tool,{event:'status',field:'inTruck',value:false,crew:cr});
+  } else if(f==='inTruck'&&tool.inTruck&&tool.missing){
+    tool.missing=false;
+    pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});
+  }
+  // Auto-transfer: if marking in-truck, pull in any copy of this tool marked missing in another crew
+  if(f==='inTruck'&&tool.inTruck){
+    const normId=normalizeId(tool.id);
+    const fromCrews=[];
+    for(const otherCr of Object.keys(data)){
+      if(otherCr===cr)continue;
+      for(let j=data[otherCr].tools.length-1;j>=0;j--){
+        const ot=data[otherCr].tools[j];
+        if(normalizeId(ot.id)===normId&&ot.missing){
+          data[otherCr].tools.splice(j,1);
+          pushHistory(tool,{event:'transferred',from:otherCr,to:cr,note:'auto-resolved via in-truck'});
+          fromCrews.push(data[otherCr].label||otherCr);
+        }
+      }
+    }
+    if(fromCrews.length>0){
+      saveData();
+      cleanupSharedConflicts();
+      render();
+      toast(`Auto-transferred from ${fromCrews.join(', ')}`,'success','Missing resolved');
+      return;
+    }
+  }
+  saveData();
+  queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});
+  renderMain();
+}
 function updateField(cr,i,f,v,input){const tool=data[cr].tools[i];if(f==='assignedTo'&&tool.assignedTo!==v)pushHistory(tool,{event:'assigned',from:tool.assignedTo,to:v,crew:cr});tool[f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
 function removeTool(cr,i){data[cr].tools.splice(i,1);saveData();cleanupSharedConflicts();render();toast("Tool removed",'info','Inventory updated');}
 function openModal(id){document.getElementById(id).classList.add("open");}
