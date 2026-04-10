@@ -41,6 +41,9 @@ html.light .cat-card           { background: var(--bg3); }
 html.light .cc-progress-track  { background: var(--bg3); }
 html.light .sc-compact-bar     { background: var(--bg3); }
 html.light .cat-health-bar     { background: var(--bg3); }
+html.light .miss-card          { background: var(--bg2); }
+html.light .miss-resolve-btn   { background: var(--bg3); }
+html.light .miss-success-state { background: rgba(47,158,63,0.05); }
 
 body {
   font-family: 'DM Sans', sans-serif;
@@ -650,6 +653,65 @@ tbody tr:hover .history-btn { opacity: 0.6; }
   .search-box { width: 100%; max-width: 100%; order: 10; }
   .modal { min-width: min(92vw, 380px); }
 }
+
+/* ── MISSING HUB: SIDEBAR ───────────────────────────────────── */
+.miss-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--orange); margin-left:6px; vertical-align:middle; flex-shrink:0; animation:pulse-miss 1.5s infinite; box-shadow:0 0 0 0 rgba(232,155,58,0.3); }
+@keyframes pulse-miss { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(232,155,58,0.28)} 50%{opacity:0.4;box-shadow:0 0 0 6px rgba(232,155,58,0)} }
+.miss-count-badge { font-family:'JetBrains Mono',monospace; font-size:11px; background:rgba(232,155,58,0.14); color:var(--orange); border:1px solid rgba(232,155,58,0.26); padding:2px 7px; border-radius:999px; font-weight:700; flex-shrink:0; }
+.crew-item.miss-active { background:linear-gradient(90deg,rgba(232,155,58,0.13),color-mix(in srgb,var(--bg3) 86%,transparent)); color:var(--orange); font-weight:700; box-shadow:inset 0 0 0 1px rgba(232,155,58,0.16); }
+.crew-item.miss-active::before { background:var(--orange); opacity:1; transform:scaleY(1); }
+
+/* ── MISSING HUB: VIEW ──────────────────────────────────────── */
+.miss-view { animation:viewFade 220ms var(--ease-premium); }
+.miss-view-header { margin-bottom:22px; }
+.miss-view-title { font-size:22px; font-weight:800; letter-spacing:-0.03em; color:var(--fg); margin-bottom:4px; }
+.miss-view-sub { font-size:13px; color:var(--fg2); font-weight:600; }
+
+/* ── MISSING HUB: CREW GROUP ────────────────────────────────── */
+.miss-crew-section { margin-bottom:28px; }
+.miss-crew-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.miss-crew-rule { width:3px; height:16px; border-radius:999px; background:var(--orange); flex-shrink:0; }
+.miss-crew-name { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:1.1px; color:var(--fg); flex:1; }
+.miss-crew-count { font-family:'JetBrains Mono',monospace; font-size:11px; background:rgba(232,155,58,0.12); color:var(--orange); border:1px solid rgba(232,155,58,0.22); padding:2px 8px; border-radius:999px; font-weight:700; }
+.miss-cards { display:flex; flex-direction:column; gap:10px; }
+
+/* ── MISSING HUB: TOOL CARD ─────────────────────────────────── */
+.miss-card { background:color-mix(in srgb,var(--bg2) 95%,transparent); border:1px solid var(--border); border-left:3px solid var(--orange); border-radius:calc(var(--radius)+1px); padding:16px 18px; box-shadow:var(--shadow-soft); transition:border-color 160ms var(--ease-premium),box-shadow 180ms var(--ease-premium),transform 160ms var(--ease-premium); overflow:hidden; }
+.miss-card:hover { border-color:color-mix(in srgb,var(--orange) 52%,var(--border)); box-shadow:var(--shadow-hover); transform:translateY(-1px); }
+.miss-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.miss-card-id { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--orange); letter-spacing:-0.02em; line-height:1.1; margin-bottom:3px; }
+.miss-card-meta { font-size:12px; color:var(--fg2); font-weight:500; line-height:1.7; }
+.miss-card-meta strong { color:var(--fg); font-weight:700; }
+.miss-since { font-size:11px; font-weight:700; color:var(--orange); letter-spacing:0.02em; margin-top:4px; }
+.miss-notes { font-size:12px; color:var(--fg2); margin-top:6px; font-style:italic; line-height:1.5; }
+.miss-find-btn { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; padding:7px 14px; border-radius:9px; border:1px solid rgba(232,155,58,0.30); background:rgba(232,155,58,0.10); color:var(--orange); cursor:pointer; white-space:nowrap; flex-shrink:0; transition:transform 140ms var(--ease-premium),background-color 140ms var(--ease-premium),box-shadow 140ms var(--ease-premium); }
+.miss-find-btn:hover { background:rgba(232,155,58,0.18); transform:translateY(-1px); box-shadow:0 6px 16px rgba(232,155,58,0.14); }
+.miss-find-btn:active { transform:scale(0.97); }
+.miss-find-btn.expanded { background:rgba(232,155,58,0.16); border-color:var(--orange); }
+
+/* ── MISSING HUB: INLINE RESOLVE PANEL ─────────────────────── */
+.miss-resolve-panel { margin-top:0; padding-top:0; border-top:1px solid transparent; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-height:0; opacity:0; overflow:hidden; transition:max-height 260ms var(--ease-premium),opacity 220ms var(--ease-premium),margin-top 220ms var(--ease-premium),padding-top 220ms var(--ease-premium),border-color 220ms var(--ease-premium); }
+.miss-resolve-panel.open { max-height:80px; opacity:1; margin-top:12px; padding-top:12px; border-top-color:var(--border); }
+.miss-resolve-btn { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; padding:9px 10px; border-radius:9px; border:1px solid var(--border); background:color-mix(in srgb,var(--bg3) 92%,transparent); color:var(--fg); cursor:pointer; text-align:center; transition:transform 130ms var(--ease-premium),border-color 130ms var(--ease-premium),background-color 130ms var(--ease-premium),box-shadow 130ms var(--ease-premium),color 130ms var(--ease-premium); }
+.miss-resolve-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-soft); }
+.miss-resolve-btn:active { transform:scale(0.97); }
+.miss-resolve-btn.rb-truck  { border-color:rgba(94,194,105,0.30);  color:var(--green); }
+.miss-resolve-btn.rb-truck:hover  { background:rgba(94,194,105,0.12); border-color:var(--green); }
+.miss-resolve-btn.rb-damage { border-color:rgba(229,91,91,0.30);   color:var(--red); }
+.miss-resolve-btn.rb-damage:hover { background:rgba(229,91,91,0.10); border-color:var(--red); }
+.miss-resolve-btn.rb-repair { border-color:rgba(91,158,229,0.30);  color:var(--blue); }
+.miss-resolve-btn.rb-repair:hover { background:rgba(91,158,229,0.10); border-color:var(--blue); }
+
+/* ── MISSING HUB: CARD EXIT ─────────────────────────────────── */
+@keyframes cardExit { 0%{opacity:1;transform:translateX(0) scale(1);max-height:220px;margin-bottom:10px;padding:16px 18px} 60%{opacity:0;transform:translateX(40px) scale(0.97)} 100%{opacity:0;transform:translateX(50px) scale(0.97);max-height:0;margin-bottom:0;padding:0} }
+.miss-card.exiting { animation:cardExit 380ms var(--ease-premium) forwards; pointer-events:none; overflow:hidden; }
+
+/* ── MISSING HUB: SUCCESS STATE ─────────────────────────────── */
+.miss-success-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:72px 24px; border:1px solid rgba(94,194,105,0.22); border-radius:calc(var(--radius)+2px); background:color-mix(in srgb,var(--bg2) 94%,transparent); box-shadow:var(--shadow-soft); animation:viewFade 280ms var(--ease-snap); }
+.miss-success-icon { font-size:52px; color:var(--green); font-weight:800; margin-bottom:16px; animation:successGlow 2s var(--ease-premium) infinite alternate; }
+@keyframes successGlow { from{filter:drop-shadow(0 0 10px rgba(94,194,105,0.20))} to{filter:drop-shadow(0 0 28px rgba(94,194,105,0.55))} }
+.miss-success-title { font-size:20px; font-weight:800; color:var(--green); letter-spacing:-0.02em; margin-bottom:6px; }
+.miss-success-sub { font-size:13px; color:var(--fg2); font-weight:600; text-align:center; }
 </style>
 </head>
 <body>
@@ -888,6 +950,27 @@ function applyPendingEffects(){
       row.classList.remove('row-flash'); void row.offsetWidth; row.classList.add('row-flash');
       row.scrollIntoView({block:'center',behavior:'smooth'});
     }
+    if(effect.type==='resolve'){
+      const card=document.querySelector(`[data-miss-id="${CSS.escape(effect.missId)}"]`);
+      if(!card){renderMain();return;}
+      card.classList.add('exiting');
+      card.addEventListener('animationend',()=>{
+        const allMissNow=Object.values(data).reduce((s,c)=>s+c.tools.filter(t=>t.missing).length,0);
+        if(allMissNow===0){
+          renderMain();
+        } else {
+          const section=card.closest('.miss-crew-section');
+          card.remove();
+          if(section&&section.querySelectorAll('.miss-card:not(.exiting)').length===0)section.remove();
+          const sub=document.querySelector('.miss-view-sub');
+          if(sub){
+            const rem=Object.values(data).reduce((s,c)=>s+c.tools.filter(t=>t.missing).length,0);
+            const secs=document.querySelectorAll('.miss-crew-section').length;
+            sub.textContent=`${rem} tool${rem!==1?'s':''} across ${secs} crew${secs!==1?'s':''}`;
+          }
+        }
+      },{once:true});
+    }
   }
 }
 function flashSavedCell(input){
@@ -904,11 +987,21 @@ function setCellEditing(input,isEditing){
 }
 
 function render(){renderSidebar();renderMain();}
-function renderSidebar(){const el=document.getElementById("crew-list"),ov=activeCrew==="__overview__"?" active":"";el.innerHTML=`<div class="crew-item${ov}" onclick="selectCrew('__overview__')" style="margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:12px"><span>📊 Overview</span></div>`+Object.keys(data).map(k=>{const c=data[k],a=k===activeCrew?" active":"";return`<div class="crew-item${a}" onclick="selectCrew('${k}')"><span>${c.label||k}</span><span class="crew-count">${c.tools.length}</span></div>`;}).join("");}
+function renderSidebar(){
+  const el=document.getElementById("crew-list");
+  const ov=activeCrew==="__overview__"?" active":"";
+  const allMiss=Object.values(data).reduce((s,c)=>s+c.tools.filter(t=>t.missing).length,0);
+  const missActive=activeCrew==="__missing__";
+  const missDot=allMiss>0?'<span class="miss-dot"></span>':'';
+  const missBadge=allMiss>0?`<span class="miss-count-badge" style="margin-left:auto">${allMiss}</span>`:'';
+  const missItem=`<div class="crew-item${missActive?' miss-active':''}" onclick="selectCrew('__missing__')" style="margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:12px;display:flex;align-items:center;gap:6px"><span>⚠ Missing${missDot}</span>${missBadge}</div>`;
+  el.innerHTML=`<div class="crew-item${ov}" onclick="selectCrew('__overview__')" style="margin-bottom:2px"><span>📊 Overview</span></div>${missItem}`+Object.keys(data).map(k=>{const c=data[k],a=k===activeCrew?" active":"";return`<div class="crew-item${a}" onclick="selectCrew('${k}')"><span>${c.label||k}</span><span class="crew-count">${c.tools.length}</span></div>`;}).join("");
+}
 
 function renderMain(){
   const el=document.getElementById("main-content");
   if(activeCrew==="__overview__"){renderOverview(el);return;}
+  if(activeCrew==="__missing__"){renderMissing(el);return;}
   const crew=data[activeCrew];
   if(!crew){el.innerHTML=`<div class="empty-state"><div class="icon">🔧</div><p>No crews yet. Create one to start tracking.</p></div>`;return;}
   if(checkinMode){renderCheckin(el,crew);return;}
@@ -1094,11 +1187,82 @@ function renderOverview(el){
   requestAnimationFrame(applyPendingEffects);
 }
 
+// ─── MISSING HUB FUNCTIONS ──────────────────────────────────────────
+function missCardKey(cr,i){return cr.replace(/[^a-zA-Z0-9]/g,'_')+'__'+i;}
+function formatElapsed(ts){const ms=Date.now()-new Date(ts).getTime(),mins=Math.floor(ms/60000);if(mins<1)return'Just now';if(mins<60)return mins+' min ago';const hrs=Math.floor(mins/60);if(hrs<24)return hrs+' hour'+(hrs!==1?'s':'')+' ago';const days=Math.floor(hrs/24);if(days<7)return days+' day'+(days!==1?'s':'')+' ago';return fmtTs(ts);}
+function timeSinceMissing(tool){const h=tool.history||[];for(let i=h.length-1;i>=0;i--){const e=h[i];if(e.event==='status'&&e.field==='missing'&&e.value===true)return formatElapsed(e.ts);if(e.event==='checkin'&&e.status==='missing')return formatElapsed(e.ts);}return'Unknown';}
+function renderMissing(el){
+  const keys=Object.keys(data);
+  const groups=[];
+  for(const k of keys){
+    const items=data[k].tools.map((t,i)=>({tool:t,idx:i})).filter(({tool})=>tool.missing);
+    if(items.length>0)groups.push({crewKey:k,crewLabel:data[k].label||k,items});
+  }
+  const totalMiss=groups.reduce((s,g)=>s+g.items.length,0);
+  if(totalMiss===0){
+    el.innerHTML=`<div class="miss-view"><div class="miss-view-header"><div class="miss-view-title">⚠ Missing Tools</div></div><div class="miss-success-state"><div class="miss-success-icon">✓</div><div class="miss-success-title">All tools accounted for</div><div class="miss-success-sub">No missing tools across ${keys.length} crew${keys.length!==1?'s':''}</div></div></div>`;
+    return;
+  }
+  const sectionsHtml=groups.map(({crewKey,crewLabel,items})=>{
+    const cardsHtml=items.map(({tool,idx})=>{
+      const ck=missCardKey(crewKey,idx);
+      const since=timeSinceMissing(tool);
+      return`<div class="miss-card" data-miss-id="${ck}">
+        <div class="miss-card-top">
+          <div>
+            <div class="miss-card-id">${esc(tool.id)}</div>
+            <div class="miss-card-meta">${esc(tool.type)}${tool.brand?' · '+esc(tool.brand):''} · <strong>${esc(crewLabel)}</strong></div>
+            ${tool.assignedTo?`<div class="miss-card-meta"><strong>Assigned to:</strong> ${esc(tool.assignedTo)}</div>`:''}
+            <div class="miss-since">Missing since: ${since}</div>
+            ${tool.notes?`<div class="miss-notes">"${esc(tool.notes)}"</div>`:''}
+          </div>
+          <button class="miss-find-btn" onclick="toggleResolvePanel(this,'${esc(crewKey)}',${idx})">Mark Found ▾</button>
+        </div>
+        <div class="miss-resolve-panel" id="mrp_${ck}">
+          <button class="miss-resolve-btn rb-truck"  onclick="resolveMissing('${esc(crewKey)}',${idx},'inTruck')">✓ Back in Truck</button>
+          <button class="miss-resolve-btn rb-damage" onclick="resolveMissing('${esc(crewKey)}',${idx},'damaged')">✗ Mark Damaged</button>
+          <button class="miss-resolve-btn rb-repair" onclick="resolveMissing('${esc(crewKey)}',${idx},'repair')">🔧 Send to Repair</button>
+        </div>
+      </div>`;
+    }).join('');
+    return`<div class="miss-crew-section"><div class="miss-crew-header"><div class="miss-crew-rule"></div><div class="miss-crew-name">${esc(crewLabel)}</div><div class="miss-crew-count">${items.length}</div></div><div class="miss-cards">${cardsHtml}</div></div>`;
+  }).join('');
+  el.innerHTML=`<div class="miss-view"><div class="miss-view-header"><div class="miss-view-title">⚠ Missing Tools</div><div class="miss-view-sub">${totalMiss} tool${totalMiss!==1?'s':''} across ${groups.length} crew${groups.length!==1?'s':''}</div></div>${sectionsHtml}</div>`;
+  requestAnimationFrame(applyPendingEffects);
+}
+function toggleResolvePanel(btn,cr,i){
+  const panel=document.getElementById('mrp_'+missCardKey(cr,i));
+  if(!panel)return;
+  const isOpen=panel.classList.contains('open');
+  document.querySelectorAll('.miss-resolve-panel.open').forEach(p=>{
+    p.classList.remove('open');
+    const b=p.closest('.miss-card')?.querySelector('.miss-find-btn');
+    if(b){b.classList.remove('expanded');b.textContent='Mark Found ▾';}
+  });
+  if(!isOpen){panel.classList.add('open');btn.classList.add('expanded');btn.textContent='Cancel ▴';}
+}
+function resolveMissing(cr,i,newStatus){
+  const tool=data[cr]?.tools[i];
+  if(!tool||!tool.missing)return;
+  tool.missing=false;
+  pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});
+  if(newStatus==='inTruck'){tool.inTruck=true;pushHistory(tool,{event:'status',field:'inTruck',value:true,crew:cr});}
+  else if(newStatus==='damaged'){tool.damaged=true;pushHistory(tool,{event:'status',field:'damaged',value:true,crew:cr});}
+  else if(newStatus==='repair'){tool.repair=true;pushHistory(tool,{event:'status',field:'repair',value:true,crew:cr});}
+  saveData();
+  const badge=document.querySelector('.miss-count-badge');
+  if(badge){const prev=parseInt(badge.textContent,10)||0;if(prev>1)badge.textContent=String(prev-1);else badge.remove();}
+  const allMissNow=Object.values(data).reduce((s,c)=>s+c.tools.filter(t=>t.missing).length,0);
+  if(allMissNow===0)document.querySelectorAll('.miss-dot').forEach(d=>d.remove());
+  queueEffect({type:'resolve',missId:missCardKey(cr,i)});
+  requestAnimationFrame(applyPendingEffects);
+}
+
 // ─── ACTIONS ────────────────────────────────────────────────────────
 function selectCrew(k){activeCrew=k;searchTerm="";checkinMode=false;render();}
 function onSearch(v){searchTerm=v.toLowerCase();renderMain();}
 function toggleCat(cr,cat){collapsedCats[cr+"__"+cat]=!collapsedCats[cr+"__"+cat];renderMain();}
-function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
+function toggleField(cr,i,f){const tool=data[cr].tools[i];tool[f]=!tool[f];pushHistory(tool,{event:'status',field:f,value:tool[f],crew:cr});if(f==='missing'&&tool.missing&&tool.inTruck){tool.inTruck=false;pushHistory(tool,{event:'status',field:'inTruck',value:false,crew:cr});}else if(f==='inTruck'&&tool.inTruck&&tool.missing){tool.missing=false;pushHistory(tool,{event:'status',field:'missing',value:false,crew:cr});}saveData();queueEffect({type:'status',toolId:normalizeId(tool.id),field:f});renderMain();}
 function updateField(cr,i,f,v,input){const tool=data[cr].tools[i];if(f==='assignedTo'&&tool.assignedTo!==v)pushHistory(tool,{event:'assigned',from:tool.assignedTo,to:v,crew:cr});tool[f]=v;saveData();flashSavedCell(input);cleanupSharedConflicts();}
 function removeTool(cr,i){data[cr].tools.splice(i,1);saveData();cleanupSharedConflicts();render();toast("Tool removed",'info','Inventory updated');}
 function openModal(id){document.getElementById(id).classList.add("open");}
