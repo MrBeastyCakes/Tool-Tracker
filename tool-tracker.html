@@ -358,31 +358,78 @@ tbody tr:hover .remove-btn { opacity: 1; }
 .field input:focus, .field select:focus { border-color: var(--accent); box-shadow: var(--shadow-focus); transform: translateY(-1px); }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 
-.print-crew-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.print-crew-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; margin-top: 8px; }
 .print-crew-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); transition: all 140ms var(--ease-premium); background: color-mix(in srgb, var(--bg2) 92%, transparent); }
 .print-crew-option:hover { border-color: var(--fg2); transform: translateY(-1px); }
 .print-crew-option.selected { border-color: var(--accent); background: rgba(245,166,35,0.08); box-shadow: inset 0 0 0 1px rgba(245,166,35,0.12); }
+.print-layout-row { display:flex; gap:8px; margin-top:8px; }
+.print-layout-btn { flex:1; display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:color-mix(in srgb,var(--bg2) 92%,transparent); cursor:pointer; text-align:left; transition:border-color 140ms var(--ease-premium),background 140ms var(--ease-premium),box-shadow 140ms var(--ease-premium); font-family:'DM Sans',sans-serif; }
+.print-layout-btn.active { border-color:var(--accent); background:rgba(245,166,35,0.08); box-shadow:inset 0 0 0 1px rgba(245,166,35,0.12); }
+.plb-icon { font-size:20px; flex-shrink:0; line-height:1; }
+.plb-label { font-size:13px; font-weight:700; color:var(--fg); }
+.plb-sub { font-size:11px; color:var(--fg2); margin-top:2px; }
+.print-options-row { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; padding:12px 14px; background:color-mix(in srgb,var(--bg3) 60%,transparent); border-radius:10px; border:1px solid var(--border); }
+.print-opt-label { display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; color:var(--fg); }
+.print-preview-count { font-size:12px; color:var(--fg2); font-weight:600; text-align:center; margin-bottom:4px; min-height:16px; }
 
 @media print {
   @page { margin: 10mm 8mm; }
   body { background: #fff !important; color: #000 !important; }
   .header, .sidebar, .main, .overlay { display: none !important; }
   #print-area { display: block !important; }
-  .print-page { page-break-after: always; break-after: page; padding: 6px 10px; font-family: 'DM Sans', sans-serif; margin: 0; }
+
+  /* ── Page wrapper ── */
+  .print-page { page-break-after: always; break-after: page; padding: 4px 8px; font-family: 'DM Sans', sans-serif; margin: 0; }
   .print-page:last-child { page-break-after: auto; break-after: auto; }
-  .print-page > div:first-child { break-after: avoid-page; page-break-after: avoid; }
-  .print-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+
+  /* ── Page header ── */
+  .p-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #111; padding-bottom: 5px; margin-bottom: 8px; }
+  .p-head-crew { font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: #111; }
+  .p-head-sub { font-size: 9px; color: #555; text-align: right; line-height: 1.6; }
+
+  /* ── Problem band ── */
+  .p-problems { border: 1px solid #ccc; border-left: 3px solid #555; border-radius: 3px; padding: 5px 8px; margin-bottom: 8px; background: #f7f7f7; break-inside: avoid; }
+  .p-problems-title { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #333; margin-bottom: 3px; }
+  .p-problems-list { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .p-prob-chip { font-size: 8px; color: #333; }
+  .p-prob-chip strong { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Main table ── */
+  .print-table { width: 100%; border-collapse: collapse; font-size: 9.5px; }
   .print-table thead { display: table-header-group; }
   .print-table tfoot { display: table-footer-group; }
   .print-table tr { break-inside: avoid; page-break-inside: avoid; }
-  .print-table th { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; text-align: left; padding: 3px 4px; border-bottom: 1.5px solid #333; background: #f0f0f0; }
-  .print-table td { padding: 3px 4px; border-bottom: 1px solid #ccc; height: 18px; line-height: 1.2; }
-  .print-cat-row td { background: #e0e0e0 !important; font-weight: 700; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 4px !important; height: auto !important; }
-  .print-cat-row { break-after: avoid-page; page-break-after: avoid; }
-  .print-chk { display: inline-block; width: 11px; height: 11px; border: 1.5px solid #444; border-radius: 2px; vertical-align: middle; }
-  .print-footer { margin-top: 8px; font-size: 9px; color: #666; break-inside: avoid; page-break-inside: avoid; }
-  .print-sig { display: flex; justify-content: space-between; margin-top: 6px; }
-  .print-sig-line { border-bottom: 1px solid #999; min-width: 160px; display: inline-block; }
+  .print-table th { font-size: 7.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; padding: 3px 5px; border-bottom: 1.5px solid #222; border-top: 1px solid #ccc; background: #efefef; color: #333; }
+  .print-table th.chk-h { text-align: center; }
+  .print-table td { padding: 2px 5px; border-bottom: 1px solid #e0e0e0; height: 19px; line-height: 1.25; vertical-align: middle; }
+  .print-table tr.p-alt td { background: #fafafa; }
+
+  /* ── Category label ── */
+  .p-cat-cell { font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #888; white-space: nowrap; padding-top: 5px !important; border-top: 1px solid #bbb !important; }
+  .p-cat-first { border-top: none !important; }
+
+  /* ── Tool cells ── */
+  .p-id { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; color: #111; }
+  .p-type { font-size: 9px; color: #111; }
+  .p-brand { font-size: 7.5px; color: #888; display: block; margin-top: 1px; }
+
+  /* ── Checkboxes ── */
+  .print-chk { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #555; border-radius: 2px; vertical-align: middle; }
+  .print-chk.filled { background: #333; border-color: #111; }
+  td.chk-td { text-align: center; }
+
+  /* ── Blank entry rows ── */
+  .p-blank td { border-bottom: 1px solid #e8e8e8; height: 22px; }
+  .p-blank .p-id-blank { border-bottom: 1px solid #ccc; display: inline-block; width: 60px; }
+
+  /* ── Footer ── */
+  .print-footer { margin-top: 10px; break-inside: avoid; page-break-inside: avoid; }
+  .p-legend { font-size: 8px; color: #666; margin-bottom: 6px; }
+  .print-sig { display: flex; gap: 24px; margin-top: 6px; }
+  .p-sig-block { flex: 1; }
+  .p-sig-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #555; margin-bottom: 2px; }
+  .p-sig-line { border-bottom: 1px solid #999; display: block; height: 16px; }
+  .p-print-stamp { font-size: 7px; color: #bbb; text-align: right; margin-top: 6px; }
 }
 #print-area { display: none; }
 #print-area .print-page { display: block; }
@@ -769,11 +816,38 @@ html.light .miss-crew-select { background-color:var(--bg2); }
 </div></div>
 
 <!-- PRINT -->
-<div class="overlay" id="print-modal"><div class="modal">
+<div class="overlay" id="print-modal"><div class="modal" style="max-width:480px">
   <h3>Print Weekly Sheets</h3>
   <div class="field"><label>Week of</label><input type="date" id="print-week-date"></div>
-  <div class="field"><label>Select Crews</label><div id="print-crew-list" class="print-crew-list"></div></div>
-  <div style="margin-bottom:14px"><label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="print-prefill" checked> Pre-fill known assignments</label></div>
+  <div class="field">
+    <label style="display:flex;align-items:center;justify-content:space-between">
+      <span>Select Crews</span>
+      <span style="display:flex;gap:6px">
+        <button class="btn btn-sm" style="font-size:11px;padding:3px 10px" onclick="printSelectAll()">All</button>
+        <button class="btn btn-sm" style="font-size:11px;padding:3px 10px" onclick="printClearAll()">None</button>
+      </span>
+    </label>
+    <div id="print-crew-list" class="print-crew-list"></div>
+  </div>
+  <div class="field">
+    <label>Layout</label>
+    <div class="print-layout-row">
+      <button class="print-layout-btn active" onclick="setPrintLayout('checklist',this)">
+        <span class="plb-icon">☐</span>
+        <div><div class="plb-label">Weekly Checklist</div><div class="plb-sub">Blank boxes — field crew fills in</div></div>
+      </button>
+      <button class="print-layout-btn" onclick="setPrintLayout('snapshot',this)">
+        <span class="plb-icon">◼</span>
+        <div><div class="plb-label">Status Snapshot</div><div class="plb-sub">Current status pre-filled for records</div></div>
+      </button>
+    </div>
+  </div>
+  <div class="print-options-row">
+    <label class="print-opt-label"><input type="checkbox" id="print-show-problems" checked onchange="printShowProblems=this.checked"> Show problem tools at top</label>
+    <label class="print-opt-label"><input type="checkbox" id="print-include-notes" onchange="printIncludeNotes=this.checked"> Include existing notes</label>
+    <label class="print-opt-label"><input type="checkbox" id="print-prefill" checked> Pre-fill assignments</label>
+  </div>
+  <div id="print-preview-count" class="print-preview-count"></div>
   <div class="modal-actions"><button class="btn" onclick="closeModal('print-modal')">Cancel</button><button class="btn btn-accent" onclick="doPrint()">🖨️ Print</button></div>
 </div></div>
 
@@ -845,7 +919,7 @@ const INITIAL = {
   "Unit 53":{label:"Unit 53",tools:[mk("BC 017","Battery Charger"),mk("BA 018","Battery"),mk("BA 043","Battery"),mk("BA 089","Battery"),mk("ID 037","Impact Drill"),mk("ID 033","Impact Drill"),mk("ID 024","Impact Drill"),mk("SS 013","Soffit Stapler"),mk("SS 015","Soffit Stapler"),mk("SS 024","Soffit Stapler"),mk("SS 011","Soffit Stapler"),mk("OSC 08","Oscillating Tool"),mk("DR 010","Drill Driver"),mk("CS 009","Circular Saw"),mk("CS 012","Circular Saw")]},
 };
 
-let data={},activeCrew="__overview__",searchTerm="",crewToDelete="",printSelected=new Set(),collapsedCats={},checkinMode=false,checkinState={},transferToolIdx=-1,pendingEffects=[],toastTimer=null,sharedConflictIds=new Set(),conflictModalState={toolId:"",selectedCrew:""};
+let data={},activeCrew="__overview__",searchTerm="",crewToDelete="",printSelected=new Set(),printLayout='checklist',printShowProblems=true,printIncludeNotes=false,collapsedCats={},checkinMode=false,checkinState={},transferToolIdx=-1,pendingEffects=[],toastTimer=null,sharedConflictIds=new Set(),conflictModalState={toolId:"",selectedCrew:""};
 const DEFAULT_PREFIXES={"BC":"Battery Charger","BA":"Battery","ID":"Impact Drill","SS":"Soffit Stapler","OSC":"Oscillating Tool","DR":"Drill Driver","CS":"Circular Saw","CC":'Circular Saw 4.5"',"RS":"Reciprocating Saw","LB":"Leaf Blower","AG":"Angle Grinder","JS":"Jig Saw"};
 let prefixMap={};
 
@@ -1406,40 +1480,139 @@ function openToolHistory(cr,i){
 }
 
 // ─── PRINT ──────────────────────────────────────────────────────────
-function openPrintModal(){document.getElementById("print-week-date").value=todayStr();printSelected=new Set(Object.keys(data));renderPrintCrewList();openModal("print-modal");}
-function renderPrintCrewList(){document.getElementById("print-crew-list").innerHTML=Object.keys(data).map(k=>{const s=printSelected.has(k)?" selected":"";return`<div class="print-crew-option${s}" onclick="togglePrintCrew('${k}')"><span style="font-size:18px">${printSelected.has(k)?'☑':'☐'}</span><span style="font-weight:600">${data[k].label||k}</span><span style="margin-left:auto;color:var(--fg2);font-size:12px">${data[k].tools.length} tools</span></div>`;}).join("");}
+function openPrintModal(){
+  document.getElementById("print-week-date").value=todayStr();
+  printSelected=new Set(Object.keys(data));
+  // Sync checkboxes to current state
+  const sp=document.getElementById("print-show-problems");
+  const in_=document.getElementById("print-include-notes");
+  if(sp)sp.checked=printShowProblems;
+  if(in_)in_.checked=printIncludeNotes;
+  // Reset layout buttons to current mode
+  document.querySelectorAll('.print-layout-btn').forEach(b=>b.classList.remove('active'));
+  const activeBtn=document.querySelector(`.print-layout-btn[onclick*="${printLayout}"]`);
+  if(activeBtn)activeBtn.classList.add('active');
+  renderPrintCrewList();
+  openModal("print-modal");
+}
+function renderPrintCrewList(){
+  document.getElementById("print-crew-list").innerHTML=Object.keys(data).map(k=>{
+    const s=printSelected.has(k)?" selected":"";
+    const prob=data[k].tools.filter(t=>t.missing||t.damaged||t.repair).length;
+    const probBadge=prob>0?`<span style="font-size:11px;color:var(--orange);font-weight:700;margin-left:6px">${prob} ⚠</span>`:'';
+    return`<div class="print-crew-option${s}" onclick="togglePrintCrew('${k}')"><span style="font-size:18px">${printSelected.has(k)?'☑':'☐'}</span><span style="font-weight:600">${esc(data[k].label||k)}</span>${probBadge}<span style="margin-left:auto;color:var(--fg2);font-size:12px">${data[k].tools.length} tools</span></div>`;
+  }).join("");
+  updatePrintPreview();
+}
 function togglePrintCrew(k){if(printSelected.has(k))printSelected.delete(k);else printSelected.add(k);renderPrintCrewList();}
+function printSelectAll(){printSelected=new Set(Object.keys(data));renderPrintCrewList();}
+function printClearAll(){printSelected.clear();renderPrintCrewList();}
+function setPrintLayout(mode,btn){
+  printLayout=mode;
+  document.querySelectorAll('.print-layout-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function updatePrintPreview(){
+  const el=document.getElementById('print-preview-count');
+  if(!el)return;
+  const crews=[...printSelected].filter(k=>data[k]);
+  const tools=crews.reduce((s,k)=>s+data[k].tools.length,0);
+  el.textContent=crews.length===0?'No crews selected':`${crews.length} sheet${crews.length!==1?'s':''} · ${tools} tool${tools!==1?'s':''}`;
+}
 
 function doPrint(){
-  const dv=document.getElementById("print-week-date").value,wl=new Date(dv+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
-  const pf=document.getElementById("print-prefill").checked,area=document.getElementById("print-area");
-  const chk='<span class="print-chk"></span>';
-  area.innerHTML=[...printSelected].map(k=>{
-    const c=data[k],grouped=groupByCategory(c.tools);
-    const rows=grouped.map(([cat,items])=>{
-      return`<tr class="print-cat-row"><td colspan="8">${cat.toUpperCase()} (${items.length})</td></tr>`+items.map(t=>`<tr>
-        <td style="font-weight:700;font-family:'JetBrains Mono',monospace;font-size:9px">${esc(t.id)}</td>
-        <td style="font-size:9px">${esc(t.type)}${t.brand?'<br><span style="font-size:8px;color:#888">'+esc(t.brand)+'</span>':''}</td>
+  const dv=document.getElementById("print-week-date").value;
+  const wl=new Date(dv+"T12:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+  const pf=document.getElementById("print-prefill").checked;
+  const showProbs=document.getElementById("print-show-problems").checked;
+  const inclNotes=document.getElementById("print-include-notes").checked;
+  const isSnap=printLayout==='snapshot';
+  const now=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});
+  const area=document.getElementById("print-area");
+  const selectedArr=[...printSelected].filter(k=>data[k]);
+  const totalSheets=selectedArr.length;
+
+  area.innerHTML=selectedArr.map((k,sheetIdx)=>{
+    const c=data[k];
+    const grouped=groupByCategory(c.tools);
+
+    // Problem band
+    const probTools=c.tools.filter(t=>t.missing||t.damaged||t.repair);
+    const probBand=showProbs&&probTools.length>0?`<div class="p-problems">
+      <div class="p-problems-title">⚠ Attention Required (${probTools.length})</div>
+      <div class="p-problems-list">${probTools.map(t=>{
+        const flags=[t.missing?'Missing':null,t.damaged?'Damaged':null,t.repair?'Repair':null].filter(Boolean).join(', ');
+        return`<span class="p-prob-chip"><strong>${esc(t.id)}</strong> — ${esc(flags)}</span>`;
+      }).join('')}</div>
+    </div>`:'';
+
+    // Table rows
+    let rowIdx=0;
+    const isFirstCat=(cat)=>cat===grouped[0]?.[0];
+    const rows=grouped.map(([cat,items])=>items.map((t,ii)=>{
+      const isFirst=ii===0;
+      const isAlt=rowIdx++%2===1;
+      const catCell=isFirst
+        ?`<td class="p-cat-cell${isFirstCat(cat)?' p-cat-first':''}">${esc(cat)}</td>`
+        :`<td></td>`;
+      const chkCell=(field)=>`<td class="chk-td"><span class="print-chk${isSnap&&t[field]?' filled':''}"></span></td>`;
+      const notesCell=inclNotes&&t.notes
+        ?`<td style="font-size:8px;color:#666;font-style:italic">${esc(t.notes)}</td>`
+        :`<td></td>`;
+      return`<tr${isAlt?' class="p-alt"':''}>
+        ${catCell}
+        <td class="p-id">${esc(t.id)}</td>
+        <td class="p-type">${esc(t.type)}${t.brand?`<span class="p-brand">${esc(t.brand)}</span>`:''}</td>
         <td style="font-size:9px">${pf&&t.assignedTo?esc(t.assignedTo):''}</td>
-        <td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td></td>
-      </tr>`).join("");
-    }).join("")+Array(3).fill(`<tr><td></td><td style="font-size:8px;color:#aaa">________________</td><td></td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td style="text-align:center">${chk}</td><td></td></tr>`).join("");
+        ${chkCell('inTruck')}${chkCell('damaged')}${chkCell('repair')}${chkCell('missing')}
+        ${notesCell}
+      </tr>`;
+    }).join('')).join('');
+
+    // Blank entry rows
+    const blankRows=Array(3).fill(null).map((_,bi)=>`<tr class="p-blank${bi%2===0?'':' p-alt'}">
+      <td></td><td><span class="p-id-blank"></span></td>
+      <td><span style="border-bottom:1px solid #ccc;display:inline-block;width:90px"></span></td>
+      <td></td>
+      <td class="chk-td"><span class="print-chk"></span></td>
+      <td class="chk-td"><span class="print-chk"></span></td>
+      <td class="chk-td"><span class="print-chk"></span></td>
+      <td class="chk-td"><span class="print-chk"></span></td>
+      <td></td>
+    </tr>`).join('');
+
+    const sheetMeta=totalSheets>1?`Sheet ${sheetIdx+1} of ${totalSheets} · `:'';
     return`<div class="print-page">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1.5px solid #1a1a1a;padding-bottom:3px;margin-bottom:6px">
-        <div style="font-size:13px;font-weight:800">${esc(c.label||k)} — Weekly Tool Check</div>
-        <div style="font-size:10px;color:#555">Week of: ${wl}</div>
+      <div class="p-head">
+        <div class="p-head-crew">${esc(c.label||k)}</div>
+        <div class="p-head-sub">Weekly Tool Check · Week of ${wl}<br>${sheetMeta}Tool Track</div>
       </div>
+      ${probBand}
       <table class="print-table"><thead><tr>
-        <th style="width:10%">Tool ID</th><th style="width:17%">Type / Brand</th><th style="width:14%">Assigned To</th>
-        <th style="width:8%;text-align:center">In Truck</th><th style="width:8%;text-align:center">Damaged</th><th style="width:8%;text-align:center">Repair</th><th style="width:8%;text-align:center">Missing</th><th style="width:27%">Notes</th>
-      </tr></thead><tbody>${rows}</tbody></table>
+        <th style="width:8%">Cat</th>
+        <th style="width:10%">Tool ID</th>
+        <th style="width:16%">Type / Brand</th>
+        <th style="width:13%">Assigned To</th>
+        <th style="width:7%" class="chk-h">In Truck</th>
+        <th style="width:7%" class="chk-h">Damaged</th>
+        <th style="width:7%" class="chk-h">Repair</th>
+        <th style="width:7%" class="chk-h">Missing</th>
+        <th style="width:25%">Notes</th>
+      </tr></thead><tbody>${rows}${blankRows}</tbody></table>
       <div class="print-footer">
-        <div style="margin-bottom:4px">☐ = Check if applies</div>
-        <div class="print-sig"><div>Crew Lead: <span class="print-sig-line"></span></div><div>Date: <span class="print-sig-line" style="min-width:120px"></span></div></div>
+        <div class="p-legend">${isSnap?'◼ = current status in system':'☐ = mark if applies during check'}</div>
+        <div class="print-sig">
+          <div class="p-sig-block"><div class="p-sig-label">Checked by</div><span class="p-sig-line"></span></div>
+          <div class="p-sig-block"><div class="p-sig-label">Date</div><span class="p-sig-line"></span></div>
+          <div class="p-sig-block" style="flex:0.6"><div class="p-sig-label">Sent to dispatch ☐</div><span class="p-sig-line"></span></div>
+        </div>
+        <div class="p-print-stamp">Printed ${now}</div>
       </div>
     </div>`;
-  }).join("");
-  closeModal("print-modal");setTimeout(()=>window.print(),200);
+  }).join('');
+
+  closeModal("print-modal");
+  setTimeout(()=>window.print(),200);
 }
 
 // ─── PREFIXES ───────────────────────────────────────────────────────
